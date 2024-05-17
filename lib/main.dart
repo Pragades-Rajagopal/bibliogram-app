@@ -1,4 +1,4 @@
-import 'package:bibliogram_app/user_screens/login.dart';
+import 'package:bibliogram_app/presentations/user_screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         colorSchemeSeed: const Color.fromRGBO(86, 80, 14, 171),
         textTheme: TextTheme(
           bodyLarge: GoogleFonts.poppins(fontSize: 22.0),

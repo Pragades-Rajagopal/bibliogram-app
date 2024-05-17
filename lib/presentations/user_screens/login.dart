@@ -1,4 +1,6 @@
+import 'package:bibliogram_app/presentations/user_screens/register.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
-                      hintText: 'Fullname',
+                      hintText: 'Username',
                       alignLabelWithHint: true,
                     ),
                   ),
@@ -40,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
-                      hintText: 'Username',
+                      hintText: 'Private Key',
                       alignLabelWithHint: true,
                     ),
                   ),
@@ -67,6 +69,20 @@ class _LoginPageState extends State<LoginPage> {
                     Icons.arrow_forward_outlined,
                     size: 32.0,
                     color: Colors.white,
+                  ),
+                ),
+                const SizedBox(
+                  height: 30.0,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => const RegistrationPage());
+                  },
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
               ],
