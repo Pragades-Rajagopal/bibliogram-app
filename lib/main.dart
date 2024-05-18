@@ -1,6 +1,6 @@
 import 'package:bibliogram_app/presentations/user_screens/login.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -36,17 +36,8 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       themeMode: ThemeMode.dark,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Bibliogram',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-            ),
-          ),
-        ),
-        body: const LoginPage(),
+      home: const Scaffold(
+        body: LoginPage(),
       ),
     );
   }
