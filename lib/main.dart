@@ -1,9 +1,17 @@
+import 'package:bibliogram_app/data/local_storage/data.dart';
+import 'package:bibliogram_app/presentations/app_screens/base.dart';
 import 'package:bibliogram_app/presentations/user_screens/login.dart';
+import 'package:bibliogram_app/presentations/utils/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+String? token;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Get stored token data
+  final userData = await UserToken.getStoreTokenData();
+  token = userData["token"];
   runApp(const MyApp());
 }
 
@@ -19,26 +27,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: const Color.fromRGBO(86, 80, 14, 171),
-        textTheme: TextTheme(
-          bodyLarge: GoogleFonts.poppins(fontSize: 22.0),
-          bodyMedium: GoogleFonts.poppins(fontSize: 22.0),
-          bodySmall: GoogleFonts.poppins(fontSize: 22.0),
-          titleLarge: GoogleFonts.poppins(fontSize: 22.0),
-          titleSmall: GoogleFonts.poppins(fontSize: 22.0),
-          titleMedium: GoogleFonts.poppins(fontSize: 22.0),
-          labelLarge: GoogleFonts.poppins(fontSize: 22.0),
-          labelSmall: GoogleFonts.poppins(fontSize: 22.0),
-          labelMedium: GoogleFonts.poppins(fontSize: 22.0),
-        ),
-      ),
-      themeMode: ThemeMode.dark,
-      home: const Scaffold(
-        body: LoginPage(),
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      initialRoute: token == null ? '/' : 'app',
+      routes: {
+        "/": (context) => const LoginPage(),
+        "app": (context) => const AppBasePage(),
+      },
     );
   }
 }

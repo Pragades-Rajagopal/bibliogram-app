@@ -84,13 +84,13 @@ class _PrivateKeyPageState extends State<PrivateKeyPage> {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 300.0,
                     child: Text(
                       'Warning: Please copy this Private Key somewhere, which will be used to login on other devices',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color.fromRGBO(134, 134, 134, 1),
+                        color: Theme.of(context).colorScheme.secondary,
                         fontSize: 14.0,
                         fontStyle: FontStyle.italic,
                       ),

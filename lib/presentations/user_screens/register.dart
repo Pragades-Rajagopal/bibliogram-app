@@ -20,21 +20,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
   // Service variables
   UserApi userApi = UserApi();
   RegistrationResponse? registrationResponse;
+  // State variables
+  bool _loadingIndicator = false;
+
+  switchLoadingIndicator() {
+    setState(() {
+      _loadingIndicator = !_loadingIndicator;
+    });
+  }
 
   Future<void> registrationDo(String fullname, String username) async {
     registrationResponse = await userApi.register({
       "fullname": fullname,
       "username": username,
     });
+    switchLoadingIndicator();
     if (registrationResponse?.statusCode == statusCode["error"]) {
-      errorSnackBar(
+      showSnackBar(
         '${alertDialog["oops"]}',
         '${alertDialog["usernameTaken"]}',
+        'error',
       );
     } else if (registrationResponse?.statusCode == statusCode["serverError"]) {
-      errorSnackBar(
+      showSnackBar(
         '${alertDialog["oops"]}',
         '${alertDialog["commonError"]}',
+        'error',
       );
     } else if (registrationResponse?.statusCode == statusCode["success"]) {
       Get.offAll(() =>
@@ -69,8 +80,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextFormField(
                       controller: fullnameController,
                       textAlign: TextAlign.center,
-                      decoration: userTextFieldDecoration('Fullname'),
-                      cursorColor: Colors.white,
+                      decoration: userTextFieldDecoration('Fullname', context),
+                      cursorColor: Theme.of(context).colorScheme.secondary,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return textFieldErrors["fullname"];
@@ -87,8 +98,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextFormField(
                       controller: usernameController,
                       textAlign: TextAlign.center,
-                      decoration: userTextFieldDecoration('Username'),
-                      cursorColor: Colors.white,
+                      decoration: userTextFieldDecoration('Username', context),
+                      cursorColor: Theme.of(context).colorScheme.secondary,
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
@@ -105,6 +116,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   TextButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        switchLoadingIndicator();
                         registrationDo(
                           fullnameController.text,
                           usernameController.text,
@@ -112,7 +124,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       }
                     },
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.black87,
                       backgroundColor: Colors.green,
                       minimumSize: const Size(60, 60),
                       padding: const EdgeInsets.symmetric(
@@ -124,22 +135,33 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         ),
                       ),
                     ),
-                    child: const Icon(
-                      Icons.arrow_forward_outlined,
-                      size: 32.0,
-                      color: Colors.white,
-                    ),
+                    child: _loadingIndicator
+                        ? Container(
+                            height: 30,
+                            width: 32,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30.0),
+                              ),
+                            ),
+                            child: loadingIndicator(),
+                          )
+                        : Icon(
+                            Icons.arrow_forward_outlined,
+                            size: 32.0,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                   ),
                   const SizedBox(
                     height: 20.0,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 300.0,
                     child: Text(
                       'Note: Fullname will be used as the display name globally',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color.fromRGBO(134, 134, 134, 1),
+                        color: Theme.of(context).colorScheme.secondary,
                         fontSize: 14.0,
                         fontStyle: FontStyle.italic,
                       ),
