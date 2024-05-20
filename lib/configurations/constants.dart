@@ -1,6 +1,7 @@
 Map<String, String> endpoints = {
   "login": "/api/login",
   "register": "/api/register",
+  "book-notes": "/api/book-notes",
 };
 
 Map<String, String> apiHeader = {

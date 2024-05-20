@@ -16,10 +16,10 @@ TextTheme textTheme = TextTheme(
 ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   textTheme: textTheme,
-  // appBarTheme: const AppBarTheme(
-  //   backgroundColor: Colors.transparent,
-  //   elevation: 0,
-  // ),
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.white.withOpacity(0.9),
+    elevation: 0,
+  ),
   colorScheme: const ColorScheme.light(
     background: Colors.white,
     primary: Colors.black,
@@ -32,7 +32,7 @@ ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   textTheme: textTheme,
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.black.withOpacity(0.7),
+    backgroundColor: Colors.black.withOpacity(0.8),
     elevation: 0,
   ),
   colorScheme: const ColorScheme.dark(

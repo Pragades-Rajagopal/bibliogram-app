@@ -35,6 +35,7 @@ class _AppBasePageState extends State<AppBasePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar,
+      extendBodyBehindAppBar: true,
       body: PageView(
         physics: const BouncingScrollPhysics(),
         controller: _pageController,

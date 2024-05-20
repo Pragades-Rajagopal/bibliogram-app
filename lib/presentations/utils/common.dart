@@ -79,8 +79,8 @@ loadingIndicator() {
 
 const bottomNavBar = <BottomNavigationBarItem>[
   BottomNavigationBarItem(
-    icon: Icon(Icons.data_exploration_outlined),
-    activeIcon: Icon(Icons.data_exploration_sharp),
+    icon: Icon(Icons.local_library_outlined),
+    activeIcon: Icon(Icons.local_library_sharp),
     label: 'Global',
   ),
   BottomNavigationBarItem(
