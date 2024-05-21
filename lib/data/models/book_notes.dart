@@ -18,3 +18,42 @@ class GlobalBookNotes {
     }
   }
 }
+
+class BookNote {
+  int? id;
+  int? userId;
+  int? bookId;
+  String? notes;
+  String? createdOn;
+  String? modifiedOn;
+  String? user;
+  String? bookName;
+  String? author;
+  int? isPrivate;
+
+  BookNote({
+    this.id,
+    this.userId,
+    this.bookId,
+    this.notes,
+    this.createdOn,
+    this.modifiedOn,
+    this.user,
+    this.bookName,
+    this.author,
+    this.isPrivate,
+  });
+
+  BookNote.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    userId = json["user_id"];
+    bookId = json["book_id"];
+    notes = json["notes"];
+    createdOn = json["created_on"];
+    modifiedOn = json["modified_on"];
+    user = json["user"];
+    bookName = json["book_name"];
+    author = json["author"];
+    isPrivate = json["is_private"];
+  }
+}

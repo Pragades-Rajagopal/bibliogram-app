@@ -17,4 +17,17 @@ class BookNotesApi {
     GlobalBookNotes result = GlobalBookNotes.fromJson(body["data"]);
     return result;
   }
+
+  Future<BookNote> getNoteById(int noteId, String userId, String token) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.get(
+      Uri.parse('${env["URL"]}${endpoints["book-notes"]}/$noteId'),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    BookNote result = BookNote.fromJson(body["data"][0]);
+    return result;
+  }
 }

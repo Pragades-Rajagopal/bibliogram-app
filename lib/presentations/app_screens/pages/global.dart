@@ -1,8 +1,9 @@
 import 'package:bibliogram_app/data/local_storage/data.dart';
 import 'package:bibliogram_app/data/models/book_notes.dart';
 import 'package:bibliogram_app/data/services/book_notes.dart';
+import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/note_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get/get.dart';
 
 class GlobalAppPage extends StatefulWidget {
   const GlobalAppPage({super.key});
@@ -96,91 +97,96 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: notes.length,
         itemBuilder: (context, index) {
-          return Card(
-            color: Theme.of(context).colorScheme.background,
-            margin: const EdgeInsets.symmetric(
-              horizontal: 2.0,
-              vertical: 5.0,
-            ),
-            shape: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.tertiary,
+          return GestureDetector(
+            onTap: () {
+              Get.to(() => NotePage(noteId: notes[index]["id"]));
+            },
+            child: Card(
+              color: Theme.of(context).colorScheme.background,
+              margin: const EdgeInsets.symmetric(
+                horizontal: 2.0,
+                vertical: 5.0,
               ),
-            ),
-            shadowColor: Colors.transparent,
-            surfaceTintColor: Theme.of(context).colorScheme.background,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                          child: Text(
-                            notes[index]["bookName"],
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Theme.of(context).colorScheme.secondary,
+              shape: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+              ),
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Theme.of(context).colorScheme.background,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: Text(
+                              notes[index]["bookName"],
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Text(
-                        notes[index]["author"],
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Theme.of(context).colorScheme.secondary,
+                        Text(
+                          notes[index]["author"],
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 4.0,
-                  ),
-                  Text(
-                    notes[index]["notes"],
-                    style: const TextStyle(
-                      fontSize: 18.0,
+                      ],
                     ),
-                    maxLines: _notesMaxLines,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  // const Markdown(
-                  //   data: """notes[index]["notes"]""",
-                  //   selectable: true,
-                  // ),
-                  const SizedBox(
-                    height: 6.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                          child: Text(
-                            notes[index]["user"],
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Theme.of(context).colorScheme.secondary,
+                    const SizedBox(
+                      height: 4.0,
+                    ),
+                    Text(
+                      notes[index]["notes"],
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                      ),
+                      maxLines: _notesMaxLines,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    // const Markdown(
+                    //   data: """notes[index]["notes"]""",
+                    //   selectable: true,
+                    // ),
+                    const SizedBox(
+                      height: 6.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: Text(
+                              notes[index]["user"],
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Text(
-                        notes[index]["modifiedOn"],
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Theme.of(context).colorScheme.secondary,
+                        Text(
+                          notes[index]["modifiedOn"],
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
