@@ -128,7 +128,8 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
                             child: Text(
                               notes[index]["bookName"],
                               style: TextStyle(
-                                fontSize: 14.0,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
@@ -137,7 +138,8 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
                         Text(
                           notes[index]["author"],
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
@@ -149,17 +151,25 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
                     Text(
                       notes[index]["notes"],
                       style: const TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 20.0,
                       ),
                       maxLines: _notesMaxLines,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    // const Markdown(
-                    //   data: """notes[index]["notes"]""",
-                    //   selectable: true,
-                    // ),
                     const SizedBox(
                       height: 6.0,
+                    ),
+                    Text(
+                      notes[index]["comments"] <= 1
+                          ? '${notes[index]["comments"]} comment'
+                          : '${notes[index]["comments"]} comments',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4.0,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,17 +180,17 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
                             child: Text(
                               notes[index]["user"],
                               style: TextStyle(
-                                fontSize: 12.0,
+                                fontSize: 14.0,
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
                           ),
                         ),
                         Text(
-                          notes[index]["modifiedOn"],
+                          notes[index]["shortDate"],
                           style: TextStyle(
-                            fontSize: 12.0,
-                            color: Theme.of(context).colorScheme.secondary,
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.tertiary,
                           ),
                         ),
                       ],

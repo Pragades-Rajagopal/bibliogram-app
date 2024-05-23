@@ -14,6 +14,8 @@ class GlobalBookNotes {
         "user": json[i]["user"],
         "bookName": json[i]["book_name"],
         "author": json[i]["author"],
+        "comments": json[i]["comments"],
+        "shortDate": json[i]["short_date"],
       });
     }
   }
@@ -30,6 +32,8 @@ class BookNote {
   String? bookName;
   String? author;
   int? isPrivate;
+  int? comments;
+  String? shortDate;
 
   BookNote({
     this.id,
@@ -42,6 +46,8 @@ class BookNote {
     this.bookName,
     this.author,
     this.isPrivate,
+    this.comments,
+    this.shortDate,
   });
 
   BookNote.fromJson(Map<String, dynamic> json) {
@@ -55,5 +61,7 @@ class BookNote {
     bookName = json["book_name"];
     author = json["author"];
     isPrivate = json["is_private"];
+    comments = json["comments"];
+    shortDate = json["short_date"];
   }
 }
