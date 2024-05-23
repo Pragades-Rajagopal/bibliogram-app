@@ -1,6 +1,8 @@
 import 'package:bibliogram_app/data/local_storage/data.dart';
 import 'package:bibliogram_app/data/models/book_notes.dart';
+import 'package:bibliogram_app/data/models/comment.dart';
 import 'package:bibliogram_app/data/services/book_notes.dart';
+import 'package:bibliogram_app/data/services/comments.dart';
 import 'package:flutter/material.dart';
 
 class NotePage extends StatefulWidget {
@@ -17,10 +19,11 @@ class NotePage extends StatefulWidget {
 class _NotePageState extends State<NotePage> {
   String _userId = '';
   String _token = '';
-  int _noteId = 0;
   // Service
   BookNotesApi bookNotesApi = BookNotesApi();
   BookNote? bookNote;
+  CommentsApi commentsApi = CommentsApi();
+  List<Map<String, dynamic>> comments = [];
 
   @override
   void initState() {
@@ -33,13 +36,29 @@ class _NotePageState extends State<NotePage> {
     setState(() {
       _userId = userData["id"];
       _token = userData["token"];
-      _noteId = widget.noteId;
     });
-    await getNoteByIdDo(_noteId);
+    await getNoteByIdDo(widget.noteId);
+    await getCommentsForNote(widget.noteId);
   }
 
   Future<void> getNoteByIdDo(int noteId) async {
     bookNote = await bookNotesApi.getNoteById(noteId, _userId, _token);
+  }
+
+  Future<void> getCommentsForNote(int noteId) async {
+    Comments data = await commentsApi.getCommentsByQuery(
+      {
+        "noteId": widget.noteId,
+        "limit": 100,
+        "offset": 0,
+      },
+      _userId,
+      _token,
+    );
+    setState(() {
+      comments.clear();
+      comments.addAll(data.data);
+    });
   }
 
   @override
@@ -53,29 +72,33 @@ class _NotePageState extends State<NotePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                      child: Text(
-                        '${bookNote?.bookName}',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+              Text.rich(
+                TextSpan(
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 20,
+                  ),
+                  children: <TextSpan>[
+                    const TextSpan(
+                      text: 'Notes about ',
+                    ),
+                    TextSpan(
+                      text: '${bookNote?.bookName}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  Text(
-                    '${bookNote?.author}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Theme.of(context).colorScheme.secondary,
+                    const TextSpan(
+                      text: ' by ',
                     ),
-                  ),
-                ],
+                    TextSpan(
+                      text: '${bookNote?.author}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 14.0,
@@ -96,16 +119,16 @@ class _NotePageState extends State<NotePage> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                       child: Text(
-                        '${bookNote?.user}',
+                        'From ${bookNote?.user}',
                         style: TextStyle(
-                          fontSize: 16.0,
+                          fontSize: 18.0,
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                     ),
                   ),
                   Text(
-                    '${bookNote?.modifiedOn}',
+                    '${bookNote?.shortDate}',
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Theme.of(context).colorScheme.secondary,
@@ -114,13 +137,105 @@ class _NotePageState extends State<NotePage> {
                 ],
               ),
               const SizedBox(
-                height: 20.0,
+                height: 24.0,
               ),
+              Text(
+                'Comments (${comments.length})',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              commentsList(comments),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget commentsList(List comments) {
+    if (comments.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 14),
+        alignment: Alignment.center,
+        child: Text(
+          'No comments available for this note',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    } else {
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: comments.length,
+        itemBuilder: (context, index) {
+          return Card(
+            color: Theme.of(context).colorScheme.background,
+            margin: const EdgeInsets.symmetric(
+              horizontal: 2.0,
+              vertical: 5.0,
+            ),
+            shape: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+            ),
+            shadowColor: Colors.transparent,
+            surfaceTintColor: Theme.of(context).colorScheme.background,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    comments[index]["comment"],
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6.0,
+                  ),
+                  const SizedBox(
+                    height: 4.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                          child: Text(
+                            comments[index]["user"],
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        comments[index]["shortDate"],
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 }
 
