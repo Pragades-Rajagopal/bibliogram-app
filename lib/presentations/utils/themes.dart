@@ -25,6 +25,7 @@ ThemeData lightTheme = ThemeData(
     primary: Colors.black,
     secondary: Colors.black54,
     tertiary: Color.fromRGBO(180, 180, 180, 1),
+    surface: Color.fromRGBO(245, 245, 245, 1),
   ),
 );
 
@@ -40,5 +41,6 @@ ThemeData darkTheme = ThemeData(
     primary: Colors.white,
     secondary: Colors.white54,
     tertiary: Color.fromRGBO(117, 117, 117, 1),
+    surface: Color.fromRGBO(27, 27, 27, 1),
   ),
 );

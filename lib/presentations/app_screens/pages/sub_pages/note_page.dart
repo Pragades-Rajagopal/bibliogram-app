@@ -24,6 +24,10 @@ class _NotePageState extends State<NotePage> {
   BookNote? bookNote;
   CommentsApi commentsApi = CommentsApi();
   List<Map<String, dynamic>> comments = [];
+  // Add comment variables
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final textController = TextEditingController();
+  static const _maxLines = 10;
 
   @override
   void initState() {
@@ -64,7 +68,7 @@ class _NotePageState extends State<NotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar,
+      appBar: _appBar(context),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
         child: Container(
@@ -237,15 +241,147 @@ class _NotePageState extends State<NotePage> {
       );
     }
   }
-}
 
-AppBar _appBar = AppBar(
-  title: const Text(
-    'Bibliogram',
-    style: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 20.0,
-    ),
-  ),
-  centerTitle: true,
-);
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 480,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Add comment',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 20.0,
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                SizedBox(
+                  height: _maxLines * 24,
+                  width: 380.0,
+                  child: TextFormField(
+                    maxLines: _maxLines,
+                    controller: textController,
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 1.0,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(
+                          color: Color(0xFFFF0000),
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return textFieldErrors["add_feed_mandatory"];
+                    //   }
+                    //   return null;
+                    // },
+                  ),
+                ),
+                const SizedBox(height: 14.0),
+                TextButton(
+                  onPressed: () {},
+                  style: const ButtonStyle(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                  ),
+                  child: const Text(
+                    'Add',
+                    style: TextStyle(
+                      color: Colors.lightBlue,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                TextButton(
+                  onPressed: () {
+                    // Close the bottom sheet
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.close,
+                    size: 32.0,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  AppBar _appBar(BuildContext context) {
+    return AppBar(
+      title: const Text(
+        'Bibliogram',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20.0,
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        TextButton(
+          onPressed: () {
+            _showBottomSheet(context);
+          },
+          style: const ButtonStyle(
+            padding: MaterialStatePropertyAll(
+              EdgeInsets.fromLTRB(0, 4, 18, 0),
+            ),
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
+          child: const Text(
+            'Comment',
+            style: TextStyle(
+              color: Colors.lightBlue,
+              fontSize: 18.0,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
