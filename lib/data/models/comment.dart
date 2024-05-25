@@ -45,3 +45,18 @@ class Comment {
     shortDate = json["short_date"];
   }
 }
+
+class AddCommentResponse {
+  int? statusCode;
+  String? message;
+
+  AddCommentResponse({
+    this.statusCode,
+    this.message,
+  });
+
+  AddCommentResponse.fromJson(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+  }
+}

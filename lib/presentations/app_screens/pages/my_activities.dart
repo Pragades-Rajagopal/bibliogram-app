@@ -5,22 +5,28 @@ import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/note_pa
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class GlobalAppPage extends StatefulWidget {
-  const GlobalAppPage({super.key});
+class MyActivitiesPage extends StatefulWidget {
+  const MyActivitiesPage({super.key});
 
   @override
-  State<GlobalAppPage> createState() => _GlobalAppPageState();
+  State<MyActivitiesPage> createState() => _MyActivitiesPageState();
 }
 
-class _GlobalAppPageState extends State<GlobalAppPage> {
+class _MyActivitiesPageState extends State<MyActivitiesPage> {
   String _userId = '';
   String _token = '';
   final int _notesMaxLines = 10;
   // Service variables
   BookNotesApi bookNotesApi = BookNotesApi();
-  List<Map<String, dynamic>> globalNotes = [];
+  List<Map<String, dynamic>> myNotes = [];
   // State variables
   bool _isApiLoading = true;
+
+  switchLoadingIndicator() {
+    setState(() {
+      _isApiLoading = !_isApiLoading;
+    });
+  }
 
   @override
   void initState() {
@@ -34,14 +40,20 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
       _userId = userData["id"];
       _token = userData["token"];
     });
-    await globalBookNotesDo(_userId, _token);
+    getMyNotesDo();
   }
 
-  Future<void> globalBookNotesDo(String userId, String token) async {
-    BookNotes notes = await bookNotesApi.getGlobalNotes(userId, token);
+  Future<void> getMyNotesDo() async {
+    BookNotes data = await bookNotesApi.getNoteByQuery(
+      {
+        "userId": _userId,
+      },
+      _userId,
+      _token,
+    );
     setState(() {
-      globalNotes.clear();
-      globalNotes.addAll(notes.data);
+      myNotes.clear();
+      myNotes.addAll(data.data);
       _isApiLoading = false;
     });
   }
@@ -53,7 +65,7 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
       body: RefreshIndicator(
         displacement: Scaffold.of(context).appBarMaxHeight ?? 40.0,
         onRefresh: () async {
-          await globalBookNotesDo(_userId, _token);
+          await getMyNotesDo();
         },
         color: Theme.of(context).colorScheme.secondary,
         child: _isApiLoading
@@ -69,7 +81,7 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      globalNotesListView(globalNotes),
+                      notesViewList(myNotes),
                     ],
                   ),
                 ),
@@ -78,12 +90,12 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
     );
   }
 
-  Widget globalNotesListView(List notes) {
+  Widget notesViewList(List notes) {
     if (notes.isEmpty) {
       return Container(
         alignment: Alignment.center,
         child: Text(
-          'No global notes available',
+          'Create your first note',
           style: TextStyle(
             fontSize: 16.0,
             color: Theme.of(context).colorScheme.secondary,

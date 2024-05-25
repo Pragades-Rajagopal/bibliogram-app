@@ -24,6 +24,7 @@ Map<String, String> textFieldErrors = {
   'privateKey': 'Private Key is mandatory',
   'fullname': 'Fullname is mandatory',
   'general': 'This field is mandatory',
+  'add_comment_mandatory': 'Comment is mandatory',
 };
 
 Map<String, String> alertDialog = {
@@ -39,4 +40,5 @@ Map<String, String> alertDialog = {
   "logoutSuccess": "User logged out successfully",
   "deactivationSuccess": "User successfully deactivated",
   "deactivationError": "Error while deactivating user",
+  "addCommentSuccess": "Comment added successfully",
 };

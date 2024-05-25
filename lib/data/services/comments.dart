@@ -39,4 +39,19 @@ class CommentsApi {
     Comment result = Comment.fromJson(body["data"][0]);
     return result;
   }
+
+  Future<AddCommentResponse> addComment(
+      Map<String, dynamic> request, String userId, String token) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.put(
+      Uri.parse('${env["URL"]}${endpoints["comments"]}'),
+      body: json.encode(request),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    AddCommentResponse result = AddCommentResponse.fromJson(body);
+    return result;
+  }
 }

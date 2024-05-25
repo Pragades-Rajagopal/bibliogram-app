@@ -1,7 +1,7 @@
-class GlobalBookNotes {
+class BookNotes {
   List<Map<String, dynamic>> data = [];
 
-  GlobalBookNotes.fromJson(List<dynamic> json) {
+  BookNotes.fromJson(List<dynamic> json) {
     for (var i = 0; i < json.length; i++) {
       data.add({
         "id": json[i]["id"],
