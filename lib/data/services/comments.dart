@@ -15,7 +15,7 @@ class CommentsApi {
     apiHeader["userId"] = userId;
     var response = await http.get(
       Uri.parse(
-          '${env["URL"]}${endpoints["comments"]}?noteId=${query["noteId"]}&limit=${query["limit"]}&offset=${query["offset"]}'),
+          '${env["URL"]}${endpoints["comments"]}?userId=${query["userId"]}&noteId=${query["noteId"]}&limit=${query["limit"]}&offset=${query["offset"]}'),
       headers: apiHeader,
     );
     var body = jsonDecode(response.body);

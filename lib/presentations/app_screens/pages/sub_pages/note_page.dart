@@ -56,6 +56,7 @@ class _NotePageState extends State<NotePage> {
     Comments data = await commentsApi.getCommentsByQuery(
       {
         "noteId": widget.noteId,
+        "userId": "",
         "limit": 100,
         "offset": 0,
       },
@@ -234,10 +235,7 @@ class _NotePageState extends State<NotePage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 6.0,
-                  ),
-                  const SizedBox(
-                    height: 4.0,
+                    height: 10.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -276,6 +274,7 @@ class _NotePageState extends State<NotePage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
+      elevation: 0.0,
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

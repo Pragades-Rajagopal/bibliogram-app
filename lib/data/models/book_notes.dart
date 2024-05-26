@@ -65,3 +65,25 @@ class BookNote {
     shortDate = json["short_date"];
   }
 }
+
+class AddBook {
+  int? bookId;
+  int? userId;
+  int? id;
+  String? note;
+}
+
+class AddorUpdateResponse {
+  int? statusCode;
+  String? message;
+
+  AddorUpdateResponse({
+    this.statusCode,
+    this.message,
+  });
+
+  AddorUpdateResponse.fromJson(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+  }
+}

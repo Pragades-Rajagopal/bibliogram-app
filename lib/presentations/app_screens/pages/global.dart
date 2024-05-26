@@ -64,7 +64,7 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
               )
             : SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -115,12 +115,13 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
               shadowColor: Colors.transparent,
               surfaceTintColor: Theme.of(context).colorScheme.background,
               child: Container(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Padding(

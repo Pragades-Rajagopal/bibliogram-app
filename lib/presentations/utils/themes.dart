@@ -25,7 +25,7 @@ ThemeData lightTheme = ThemeData(
     primary: Colors.black,
     secondary: Colors.black54,
     tertiary: Color.fromRGBO(180, 180, 180, 1),
-    surface: Color.fromRGBO(255, 255, 255, 1),
+    surface: Color.fromRGBO(246, 246, 246, 1),
   ),
 );
 

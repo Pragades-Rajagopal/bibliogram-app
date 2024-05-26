@@ -41,11 +41,29 @@ class BookNotesApi {
     apiHeader["userId"] = userId;
     var response = await http.get(
       Uri.parse(
-          '${env["URL"]}${endpoints["book-notes"]}?userId=${query["userId"]}&limit=100&offset=0'),
+          '${env["URL"]}${endpoints["book-notes"]}?userId=${query["userId"]}&limit=${query["limit"]}0&offset=${query["offset"]}'),
       headers: apiHeader,
     );
     var body = jsonDecode(response.body);
     BookNotes result = BookNotes.fromJson(body["data"]);
+    return result;
+  }
+
+  Future<AddorUpdateResponse> addOrUpdateNote(
+    Map<String, String> request,
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.put(
+      Uri.parse('${env["URL"]}${endpoints["book-notes"]}'),
+      headers: apiHeader,
+      body: json.encode(request),
+    );
+    var body = jsonDecode(response.body);
+    AddorUpdateResponse result = AddorUpdateResponse.fromJson(body);
     return result;
   }
 }

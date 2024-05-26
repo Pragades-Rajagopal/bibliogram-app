@@ -25,6 +25,7 @@ Map<String, String> textFieldErrors = {
   'fullname': 'Fullname is mandatory',
   'general': 'This field is mandatory',
   'add_comment_mandatory': 'Comment is mandatory',
+  'mandatory': 'Can not be empty',
 };
 
 Map<String, String> alertDialog = {
@@ -41,4 +42,6 @@ Map<String, String> alertDialog = {
   "deactivationSuccess": "User successfully deactivated",
   "deactivationError": "Error while deactivating user",
   "addCommentSuccess": "Comment added successfully",
+  "addNoteSuccess": "Note added successfully",
+  "updateNoteSuccess": "Note updated successfully",
 };

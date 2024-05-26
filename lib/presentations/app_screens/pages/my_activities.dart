@@ -1,7 +1,9 @@
 import 'package:bibliogram_app/data/local_storage/data.dart';
 import 'package:bibliogram_app/data/models/book_notes.dart';
+import 'package:bibliogram_app/data/models/comment.dart';
 import 'package:bibliogram_app/data/services/book_notes.dart';
-import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/note_page.dart';
+import 'package:bibliogram_app/data/services/comments.dart';
+import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/edit_note.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,7 +20,9 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
   final int _notesMaxLines = 10;
   // Service variables
   BookNotesApi bookNotesApi = BookNotesApi();
+  CommentsApi commentsApi = CommentsApi();
   List<Map<String, dynamic>> myNotes = [];
+  List<Map<String, dynamic>> myComments = [];
   // State variables
   bool _isApiLoading = true;
 
@@ -41,12 +45,15 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
       _token = userData["token"];
     });
     getMyNotesDo();
+    getMyCommentsDo();
   }
 
   Future<void> getMyNotesDo() async {
     BookNotes data = await bookNotesApi.getNoteByQuery(
       {
         "userId": _userId,
+        "limit": 100,
+        "offset": 0,
       },
       _userId,
       _token,
@@ -54,6 +61,24 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
     setState(() {
       myNotes.clear();
       myNotes.addAll(data.data);
+      _isApiLoading = false;
+    });
+  }
+
+  Future<void> getMyCommentsDo() async {
+    Comments data = await commentsApi.getCommentsByQuery(
+      {
+        "userId": _userId,
+        "noteId": "",
+        "limit": 100,
+        "offset": 0,
+      },
+      _userId,
+      _token,
+    );
+    setState(() {
+      myComments.clear();
+      myComments.addAll(data.data);
       _isApiLoading = false;
     });
   }
@@ -66,6 +91,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
         displacement: Scaffold.of(context).appBarMaxHeight ?? 40.0,
         onRefresh: () async {
           await getMyNotesDo();
+          await getMyCommentsDo();
         },
         color: Theme.of(context).colorScheme.secondary,
         child: _isApiLoading
@@ -76,12 +102,32 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
               )
             : SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text(
+                        'Your notes',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       notesViewList(myNotes),
+                      const SizedBox(
+                        height: 14.0,
+                      ),
+                      Text(
+                        'Your comments',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      myCommentsList(myComments),
                     ],
                   ),
                 ),
@@ -93,6 +139,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
   Widget notesViewList(List notes) {
     if (notes.isEmpty) {
       return Container(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 14),
         alignment: Alignment.center,
         child: Text(
           'Create your first note',
@@ -111,7 +158,13 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Get.to(() => NotePage(noteId: notes[index]["id"]));
+              Get.to(() => EditNotePage(
+                    noteId: notes[index]["id"],
+                    bookId: notes[index]["bookId"],
+                    bookName: notes[index]["bookName"],
+                    author: notes[index]["author"],
+                    note: notes[index]["notes"],
+                  ));
             },
             child: Card(
               color: Theme.of(context).colorScheme.background,
@@ -127,12 +180,13 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
               shadowColor: Colors.transparent,
               surfaceTintColor: Theme.of(context).colorScheme.background,
               child: Container(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Padding(
@@ -169,33 +223,18 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(
-                      height: 6.0,
-                    ),
-                    Text(
-                      notes[index]["comments"] <= 1
-                          ? '${notes[index]["comments"]} comment'
-                          : '${notes[index]["comments"]} comments',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
+                      height: 8.0,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                            child: Text(
-                              notes[index]["user"],
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
+                        Text(
+                          notes[index]["comments"] <= 1
+                              ? '${notes[index]["comments"]} comment'
+                              : '${notes[index]["comments"]} comments',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.tertiary,
                           ),
                         ),
                         Text(
@@ -209,6 +248,86 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                     ),
                   ],
                 ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Widget myCommentsList(List comments) {
+    if (comments.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 14),
+        alignment: Alignment.center,
+        child: Text(
+          'You have not commented on any notes yet!',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    } else {
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: comments.length,
+        itemBuilder: (context, index) {
+          return Card(
+            color: Theme.of(context).colorScheme.background,
+            margin: const EdgeInsets.symmetric(
+              horizontal: 2.0,
+              vertical: 5.0,
+            ),
+            shape: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+            ),
+            shadowColor: Colors.transparent,
+            surfaceTintColor: Theme.of(context).colorScheme.background,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    comments[index]["comment"],
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                          child: Text(
+                            comments[index]["user"],
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        comments[index]["shortDate"],
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           );
