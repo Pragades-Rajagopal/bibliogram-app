@@ -1,18 +1,44 @@
+import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/add_note.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
-AppBar appBar = AppBar(
-  automaticallyImplyLeading: false,
-  title: const Text(
-    'Bibliogram',
-    style: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 20.0,
+appBar({index = -1}) {
+  return AppBar(
+    automaticallyImplyLeading: false,
+    title: const Text(
+      'Bibliogram',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20.0,
+      ),
     ),
-  ),
-  centerTitle: true,
-);
+    centerTitle: true,
+    actions: [
+      if (index == 2) ...{
+        TextButton(
+          onPressed: () {
+            Get.to(() => const AddNotePage());
+          },
+          style: const ButtonStyle(
+            padding: MaterialStatePropertyAll(
+              EdgeInsets.fromLTRB(0, 4, 18, 0),
+            ),
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
+          child: const Text(
+            'Add Note',
+            style: TextStyle(
+              color: Colors.lightBlue,
+              fontSize: 18.0,
+            ),
+          ),
+        ),
+      },
+    ],
+  );
+}
 
 showSnackBar(String title, String message, String type) {
   return Get.snackbar(

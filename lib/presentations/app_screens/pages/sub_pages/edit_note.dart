@@ -2,8 +2,10 @@ import 'package:bibliogram_app/configurations/constants.dart';
 import 'package:bibliogram_app/data/local_storage/data.dart';
 import 'package:bibliogram_app/data/models/book_notes.dart';
 import 'package:bibliogram_app/data/services/book_notes.dart';
+import 'package:bibliogram_app/presentations/app_screens/base.dart';
 import 'package:bibliogram_app/presentations/utils/common.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EditNotePage extends StatefulWidget {
   final int noteId;
@@ -26,14 +28,13 @@ class EditNotePage extends StatefulWidget {
 
 class _EditNotePageState extends State<EditNotePage> {
   final GlobalKey<FormFieldState> _key = GlobalKey<FormFieldState>();
-  final noteController = TextEditingController();
   String _userId = '';
   String _token = '';
   // Service
   BookNotesApi bookNotesApi = BookNotesApi();
   AddorUpdateResponse? addorUpdateResp;
   // Edit notes variables
-  final textController = TextEditingController();
+  final noteController = TextEditingController();
   static const _maxLines = 20;
 
   @override
@@ -208,7 +209,7 @@ class _EditNotePageState extends State<EditNotePage> {
               setState(() {
                 updateNoteDo(noteController.text);
               });
-              Navigator.pop(context);
+              Get.offAll(() => const AppBasePage(index: 2));
             }
           },
           style: const ButtonStyle(

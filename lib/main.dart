@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: token == null ? '/' : 'app',
       routes: {
         "/": (context) => const LoginPage(),
-        "app": (context) => const AppBasePage(),
+        "app": (context) => const AppBasePage(index: 0),
       },
     );
   }

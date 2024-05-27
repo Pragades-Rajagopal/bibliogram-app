@@ -31,7 +31,7 @@ class _PrivateKeyPageState extends State<PrivateKeyPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: appBar,
+        appBar: appBar(),
         body: Center(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),

@@ -5,7 +5,8 @@ import 'package:bibliogram_app/presentations/utils/themes.dart';
 import 'package:flutter/material.dart';
 
 class AppBasePage extends StatefulWidget {
-  const AppBasePage({super.key});
+  final int index;
+  const AppBasePage({super.key, required this.index});
 
   @override
   State<AppBasePage> createState() => _AppBasePageState();
@@ -27,7 +28,7 @@ class _AppBasePageState extends State<AppBasePage> {
   void initState() {
     super.initState();
     setState(() {
-      _currentIndex = 0;
+      _currentIndex = widget.index;
       _pageController = PageController(initialPage: _currentIndex);
     });
   }
@@ -35,7 +36,7 @@ class _AppBasePageState extends State<AppBasePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar,
+      appBar: appBar(index: _currentIndex),
       // extendBodyBehindAppBar: true,
       body: PageView(
         physics: const BouncingScrollPhysics(),

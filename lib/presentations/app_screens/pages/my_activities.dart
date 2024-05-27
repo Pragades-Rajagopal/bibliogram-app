@@ -158,13 +158,15 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Get.to(() => EditNotePage(
-                    noteId: notes[index]["id"],
-                    bookId: notes[index]["bookId"],
-                    bookName: notes[index]["bookName"],
-                    author: notes[index]["author"],
-                    note: notes[index]["notes"],
-                  ));
+              Get.to(
+                () => EditNotePage(
+                  noteId: notes[index]["id"],
+                  bookId: notes[index]["bookId"],
+                  bookName: notes[index]["bookName"],
+                  author: notes[index]["author"],
+                  note: notes[index]["notes"],
+                ),
+              );
             },
             child: Card(
               color: Theme.of(context).colorScheme.background,

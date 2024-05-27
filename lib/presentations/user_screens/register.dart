@@ -56,7 +56,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar,
+      appBar: appBar(),
       body: Center(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

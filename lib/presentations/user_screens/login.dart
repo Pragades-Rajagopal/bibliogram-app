@@ -60,14 +60,14 @@ class _LoginPageState extends State<LoginPage> {
       // Parsing token from the API response
       userToken = UserToken.parseToken(loginResponse?.token);
       await UserToken.storeTokenData(userToken!, loginResponse?.token);
-      Get.offAll(() => const AppBasePage());
+      Get.offAll(() => const AppBasePage(index: 0));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar,
+      appBar: appBar(),
       body: Center(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

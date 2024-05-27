@@ -99,7 +99,10 @@ class _GlobalAppPageState extends State<GlobalAppPage> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Get.to(() => NotePage(noteId: notes[index]["id"]));
+              Get.to(() => NotePage(noteId: notes[index]["id"]))
+                  ?.then((_) async {
+                await globalBookNotesDo(_userId, _token);
+              });
             },
             child: Card(
               color: Theme.of(context).colorScheme.background,
