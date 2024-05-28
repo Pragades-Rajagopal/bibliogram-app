@@ -165,6 +165,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                   bookName: notes[index]["bookName"],
                   author: notes[index]["author"],
                   note: notes[index]["notes"],
+                  isPrivate: notes[index]["isPrivate"],
                 ),
               );
             },

@@ -2,8 +2,14 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:bibliogram_app/configurations/constants.dart';
 import 'package:bibliogram_app/data/local_storage/data.dart';
 import 'package:bibliogram_app/data/models/book.dart';
+import 'package:bibliogram_app/data/models/book_notes.dart';
 import 'package:bibliogram_app/data/services/book.dart';
+import 'package:bibliogram_app/data/services/book_notes.dart';
+import 'package:bibliogram_app/presentations/app_screens/base.dart';
+import 'package:bibliogram_app/presentations/utils/common.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AddNotePage extends StatefulWidget {
   const AddNotePage({super.key});
@@ -19,12 +25,16 @@ class _AddNotePageState extends State<AddNotePage> {
   String _token = '';
   // Service
   BooksApi booksApi = BooksApi();
+  BookNotesApi bookNotesApi = BookNotesApi();
+  List<Map<String, dynamic>> bookListWithMap = [];
   List<String> books = [];
+  AddorUpdateResponse? addorUpdateResp;
   // Add note variables
   final textController = TextEditingController();
   final bookController = TextEditingController();
   String selectedBook = '';
   static const _maxLines = 20;
+  bool _privateSwitchValue = true;
 
   @override
   void initState() {
@@ -43,9 +53,51 @@ class _AddNotePageState extends State<AddNotePage> {
 
   Future<void> getBooks() async {
     Book data = await booksApi.getAllBooks(_userId, _token);
+    List<String> books_ = [];
+    for (final i in data.data) {
+      bookListWithMap.add(i);
+      books_.add(i["name"]);
+    }
     setState(() {
-      books.addAll(data.data);
+      books.addAll(books_);
     });
+  }
+
+  int getBookId(String name) {
+    for (var book in bookListWithMap) {
+      if (book['name'] == name) {
+        return book['id'];
+      }
+    }
+    return -1;
+  }
+
+  Future<void> addNoteDo(String note, int bookId, int isPrivate) async {
+    addorUpdateResp = await bookNotesApi.addOrUpdateNote(
+      {
+        "note": note,
+        "userId": _userId,
+        "bookId": bookId.toString(),
+        "id": "",
+        "isPrivate": isPrivate.toString(),
+      },
+      _userId,
+      _token,
+    );
+    if (addorUpdateResp?.statusCode == statusCode["serverError"]) {
+      showSnackBar(
+        '${alertDialog["oops"]}',
+        '${alertDialog["commonError"]}',
+        'error',
+      );
+    } else if (addorUpdateResp?.statusCode == statusCode["success"]) {
+      showSnackBar(
+        '${alertDialog["commonSuccess"]}',
+        '${alertDialog["addNoteSuccess"]}',
+        'success',
+      );
+      Get.offAll(() => const AppBasePage(index: 2));
+    }
   }
 
   @override
@@ -117,7 +169,7 @@ class _AddNotePageState extends State<AddNotePage> {
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.surface,
                       contentPadding: const EdgeInsets.all(12.0),
-                      hintText: 'Type note here',
+                      hintText: 'Write note here...',
                       hintStyle: TextStyle(
                         fontSize: 18.0,
                         color: Theme.of(context).colorScheme.tertiary,
@@ -132,6 +184,9 @@ class _AddNotePageState extends State<AddNotePage> {
                           color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
+                      errorStyle: const TextStyle(
+                        fontSize: 14.0,
+                      ),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -142,7 +197,33 @@ class _AddNotePageState extends State<AddNotePage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 18.0,
+                  height: 12.0,
+                ),
+                SizedBox(
+                  width: 400.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Make this note private?',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                      CupertinoSwitch(
+                        value: _privateSwitchValue,
+                        onChanged: (value) {
+                          setState(() {
+                            _privateSwitchValue = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 24.0,
                 ),
               ],
             ),
@@ -162,8 +243,20 @@ class _AddNotePageState extends State<AddNotePage> {
       centerTitle: true,
       actions: [
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
+          onPressed: () async {
+            if (_key.currentState!.validate()) {
+              var bookId = getBookId(bookController.text);
+              if (bookId == -1) {
+                showSnackBar(
+                  '${alertDialog["oops"]}',
+                  '${alertDialog["invalidBook"]}',
+                  'error',
+                );
+              } else {
+                int isPrivate = _privateSwitchValue == true ? 1 : 0;
+                await addNoteDo(textController.text, bookId, isPrivate);
+              }
+            }
           },
           style: const ButtonStyle(
             padding: MaterialStatePropertyAll(

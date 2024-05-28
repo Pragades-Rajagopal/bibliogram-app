@@ -4,6 +4,7 @@ import 'package:bibliogram_app/data/models/book_notes.dart';
 import 'package:bibliogram_app/data/services/book_notes.dart';
 import 'package:bibliogram_app/presentations/app_screens/base.dart';
 import 'package:bibliogram_app/presentations/utils/common.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,6 +14,7 @@ class EditNotePage extends StatefulWidget {
   final String bookName;
   final String author;
   final String note;
+  final int isPrivate;
   const EditNotePage({
     super.key,
     required this.noteId,
@@ -20,6 +22,7 @@ class EditNotePage extends StatefulWidget {
     required this.bookName,
     required this.author,
     required this.note,
+    required this.isPrivate,
   });
 
   @override
@@ -36,6 +39,7 @@ class _EditNotePageState extends State<EditNotePage> {
   // Edit notes variables
   final noteController = TextEditingController();
   static const _maxLines = 20;
+  bool _privateSwitchValue = true;
 
   @override
   void initState() {
@@ -49,16 +53,18 @@ class _EditNotePageState extends State<EditNotePage> {
       _userId = userData["id"];
       _token = userData["token"];
       noteController.text = widget.note;
+      _privateSwitchValue = widget.isPrivate == 1 ? true : false;
     });
   }
 
-  Future<void> updateNoteDo(String note) async {
+  Future<void> updateNoteDo(String note, int isPrivate) async {
     addorUpdateResp = await bookNotesApi.addOrUpdateNote(
       {
         "note": note,
         "userId": _userId,
         "bookId": widget.bookId.toString(),
         "id": widget.noteId.toString(),
+        "isPrivate": isPrivate.toString(),
       },
       _userId,
       _token,
@@ -134,7 +140,7 @@ class _EditNotePageState extends State<EditNotePage> {
                     filled: true,
                     fillColor: Theme.of(context).colorScheme.surface,
                     contentPadding: const EdgeInsets.all(12.0),
-                    hintText: 'Type note here',
+                    hintText: 'Write note here...',
                     hintStyle: TextStyle(
                       fontSize: 18.0,
                       color: Theme.of(context).colorScheme.tertiary,
@@ -149,6 +155,9 @@ class _EditNotePageState extends State<EditNotePage> {
                         color: Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
+                    errorStyle: const TextStyle(
+                      fontSize: 14.0,
+                    ),
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -159,32 +168,34 @@ class _EditNotePageState extends State<EditNotePage> {
                 ),
               ),
               const SizedBox(
+                height: 12.0,
+              ),
+              SizedBox(
+                width: 400.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Make this note private?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    CupertinoSwitch(
+                      value: _privateSwitchValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _privateSwitchValue = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
                 height: 18.0,
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Expanded(
-              //       child: Padding(
-              //         padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-              //         child: Text(
-              //           'From ${bookNote?.user}',
-              //           style: TextStyle(
-              //             fontSize: 18.0,
-              //             color: Theme.of(context).colorScheme.secondary,
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //     Text(
-              //       '${bookNote?.shortDate}',
-              //       style: TextStyle(
-              //         fontSize: 16.0,
-              //         color: Theme.of(context).colorScheme.secondary,
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ),
@@ -204,11 +215,10 @@ class _EditNotePageState extends State<EditNotePage> {
       centerTitle: true,
       actions: [
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             if (_key.currentState!.validate()) {
-              setState(() {
-                updateNoteDo(noteController.text);
-              });
+              int isPrivate = _privateSwitchValue == true ? 1 : 0;
+              await updateNoteDo(noteController.text, isPrivate);
               Get.offAll(() => const AppBasePage(index: 2));
             }
           },

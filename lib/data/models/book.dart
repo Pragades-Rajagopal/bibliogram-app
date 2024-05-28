@@ -19,11 +19,13 @@
 // }
 
 class Book {
-  List<String> data = [];
-
+  List data = [];
   Book.fromJson(List<dynamic> json) {
     for (var i = 0; i < json.length; i++) {
-      data.add(json[i]["name"]);
+      data.add({
+        "id": json[i]["id"],
+        "name": json[i]["name"],
+      });
     }
   }
 }
