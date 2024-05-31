@@ -279,58 +279,86 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: comments.length,
         itemBuilder: (context, index) {
-          return Card(
-            color: Theme.of(context).colorScheme.background,
-            margin: const EdgeInsets.symmetric(
-              horizontal: 2.0,
-              vertical: 5.0,
-            ),
-            shape: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            shadowColor: Colors.transparent,
-            surfaceTintColor: Theme.of(context).colorScheme.background,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          final commentId = comments[index]["id"];
+          return Dismissible(
+            key: Key(commentId.toString()),
+            onDismissed: (direction) {
+              setState(() {
+                comments.removeAt(index);
+              });
+            },
+            direction: DismissDirection.endToStart,
+            background: Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+              padding: const EdgeInsets.only(right: 14.0),
+              color: Colors.red,
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    comments[index]["comment"],
-                    style: const TextStyle(
-                      fontSize: 18.0,
+                    'Delete',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                          child: Text(
-                            comments[index]["user"],
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Theme.of(context).colorScheme.secondary,
+                ],
+              ),
+            ),
+            child: Card(
+              color: Theme.of(context).colorScheme.background,
+              margin: const EdgeInsets.symmetric(
+                horizontal: 2.0,
+                vertical: 5.0,
+              ),
+              shape: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+              ),
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Theme.of(context).colorScheme.background,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      comments[index]["comment"],
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: Text(
+                              comments[index]["user"],
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Text(
-                        comments[index]["shortDate"],
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Theme.of(context).colorScheme.tertiary,
+                        Text(
+                          comments[index]["shortDate"],
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
