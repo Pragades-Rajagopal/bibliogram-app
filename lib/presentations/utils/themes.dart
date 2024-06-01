@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 TextTheme textTheme = TextTheme(
-  bodyLarge: GoogleFonts.poppins(fontSize: 22.0),
-  bodyMedium: GoogleFonts.poppins(fontSize: 22.0),
-  bodySmall: GoogleFonts.poppins(fontSize: 22.0),
+  bodyLarge: GoogleFonts.poppins(fontSize: 20.0),
+  bodyMedium: GoogleFonts.poppins(fontSize: 18.0),
+  bodySmall: GoogleFonts.poppins(fontSize: 16.0),
   titleLarge: GoogleFonts.poppins(fontSize: 22.0),
-  titleSmall: GoogleFonts.poppins(fontSize: 22.0),
-  titleMedium: GoogleFonts.poppins(fontSize: 22.0),
+  titleSmall: GoogleFonts.poppins(fontSize: 18.0),
+  titleMedium: GoogleFonts.poppins(fontSize: 20.0),
   labelLarge: GoogleFonts.poppins(fontSize: 22.0),
   labelSmall: GoogleFonts.poppins(fontSize: 22.0),
   labelMedium: GoogleFonts.poppins(fontSize: 22.0),

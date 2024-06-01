@@ -60,3 +60,18 @@ class AddCommentResponse {
     message = json["message"];
   }
 }
+
+class DeleteCommentResponse {
+  int? statusCode;
+  String? message;
+
+  DeleteCommentResponse({
+    this.statusCode,
+    this.message,
+  });
+
+  DeleteCommentResponse.fromJson(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+  }
+}

@@ -1,9 +1,11 @@
+import 'package:bibliogram_app/configurations/constants.dart';
 import 'package:bibliogram_app/data/local_storage/data.dart';
 import 'package:bibliogram_app/data/models/book_notes.dart';
 import 'package:bibliogram_app/data/models/comment.dart';
 import 'package:bibliogram_app/data/services/book_notes.dart';
 import 'package:bibliogram_app/data/services/comments.dart';
 import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/edit_note.dart';
+import 'package:bibliogram_app/presentations/utils/common.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -81,6 +83,27 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
       myComments.addAll(data.data);
       _isApiLoading = false;
     });
+  }
+
+  Future<void> deleteCommentDo(int commentId) async {
+    DeleteCommentResponse? deleteCommentResp = await commentsApi.deleteComment(
+      commentId,
+      _userId,
+      _token,
+    );
+    if (deleteCommentResp.statusCode == statusCode["serverError"]) {
+      showSnackBar(
+        '${alertDialog["oops"]}',
+        '${alertDialog["commonError"]}',
+        'error',
+      );
+    } else {
+      showSnackBar(
+        '${alertDialog["commonSuccess"]}',
+        '${alertDialog["deleteCommentSuccess"]}',
+        'success',
+      );
+    }
   }
 
   @override
@@ -282,16 +305,20 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
           final commentId = comments[index]["id"];
           return Dismissible(
             key: Key(commentId.toString()),
-            onDismissed: (direction) {
+            onDismissed: (direction) async {
               setState(() {
                 comments.removeAt(index);
               });
+              await deleteCommentDo(commentId);
             },
             direction: DismissDirection.endToStart,
             background: Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 4),
               padding: const EdgeInsets.only(right: 14.0),
-              color: Colors.red,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                color: Colors.red,
+              ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

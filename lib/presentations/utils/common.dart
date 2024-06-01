@@ -107,16 +107,16 @@ const bottomNavBar = <BottomNavigationBarItem>[
   BottomNavigationBarItem(
     icon: Icon(Icons.local_library_outlined),
     activeIcon: Icon(Icons.local_library_sharp),
-    label: 'Global',
+    label: 'Around Me',
   ),
   BottomNavigationBarItem(
     icon: Icon(Icons.book_outlined),
     activeIcon: Icon(Icons.book_rounded),
-    label: 'Books',
+    label: 'Top Books',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.sticky_note_2_outlined),
-    activeIcon: Icon(Icons.sticky_note_2_sharp),
+    icon: Icon(Icons.featured_play_list_outlined),
+    activeIcon: Icon(Icons.featured_play_list_rounded),
     label: 'My Activities',
   ),
   BottomNavigationBarItem(

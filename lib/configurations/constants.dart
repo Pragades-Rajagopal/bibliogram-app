@@ -46,4 +46,5 @@ Map<String, String> alertDialog = {
   "addNoteSuccess": "Note added successfully",
   "updateNoteSuccess": "Note updated successfully",
   "invalidBook": "Select the book from suggestion",
+  "deleteCommentSuccess": "Comment deleted successfully",
 };
