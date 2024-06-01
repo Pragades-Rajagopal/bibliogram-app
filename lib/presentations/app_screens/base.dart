@@ -1,5 +1,6 @@
 import 'package:bibliogram_app/presentations/app_screens/pages/global.dart';
 import 'package:bibliogram_app/presentations/app_screens/pages/my_activities.dart';
+import 'package:bibliogram_app/presentations/app_screens/pages/top_books.dart';
 import 'package:bibliogram_app/presentations/utils/common.dart';
 import 'package:bibliogram_app/presentations/utils/themes.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _AppBasePageState extends State<AppBasePage> {
   // App pages as widgets
   static final List<Widget> _widget = [
     const GlobalAppPage(),
-    const GlobalAppPage(),
+    const TopBooksPage(),
     const MyActivitiesPage(),
     const GlobalAppPage(),
   ];
