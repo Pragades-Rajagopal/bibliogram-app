@@ -41,7 +41,7 @@ class BookNotesApi {
     apiHeader["userId"] = userId;
     var response = await http.get(
       Uri.parse(
-          '${env["URL"]}${endpoints["book-notes"]}?userId=${query["userId"]}&limit=${query["limit"]}0&offset=${query["offset"]}'),
+          '${env["URL"]}${endpoints["book-notes"]}?userId=${query["userId"]}&bookId=${query["bookId"]}&limit=${query["limit"]}0&offset=${query["offset"]}'),
       headers: apiHeader,
     );
     var body = jsonDecode(response.body);
@@ -64,6 +64,23 @@ class BookNotesApi {
     );
     var body = jsonDecode(response.body);
     AddorUpdateResponse result = AddorUpdateResponse.fromJson(body);
+    return result;
+  }
+
+  Future<DeleteNoteResponse> deleteNote(
+    int noteId,
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.delete(
+      Uri.parse('${env["URL"]}${endpoints["book-notes"]}/$noteId'),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    DeleteNoteResponse result = DeleteNoteResponse.fromJson(body);
     return result;
   }
 }

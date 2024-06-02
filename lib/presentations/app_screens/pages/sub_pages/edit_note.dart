@@ -84,6 +84,27 @@ class _EditNotePageState extends State<EditNotePage> {
     }
   }
 
+  Future<void> deleteNoteDo(int noteId) async {
+    DeleteNoteResponse deleteNoteResp = await bookNotesApi.deleteNote(
+      noteId,
+      _userId,
+      _token,
+    );
+    if (deleteNoteResp.statusCode == statusCode["serverError"]) {
+      showSnackBar(
+        '${alertDialog["oops"]}',
+        '${alertDialog["commonError"]}',
+        'error',
+      );
+    } else if (deleteNoteResp.statusCode == statusCode["success"]) {
+      showSnackBar(
+        '${alertDialog["commonSuccess"]}',
+        '${alertDialog["deleteNoteSuccess"]}',
+        'success',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,10 +217,99 @@ class _EditNotePageState extends State<EditNotePage> {
               const SizedBox(
                 height: 18.0,
               ),
+              TextButton(
+                onPressed: () async {
+                  _showBottomSheet(context);
+                },
+                style: const ButtonStyle(
+                  padding: MaterialStatePropertyAll(
+                    EdgeInsets.fromLTRB(20, 4, 20, 4),
+                  ),
+                  splashFactory: NoSplash.splashFactory,
+                  backgroundColor: MaterialStatePropertyAll(Colors.redAccent),
+                ),
+                child: Text(
+                  'Delete note',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 18.0,
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      elevation: 0.0,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 220,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Do you wish to delete this note permanently?',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 20.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10.0),
+                TextButton(
+                  onPressed: () async {
+                    await deleteNoteDo(widget.noteId);
+                    Get.offAll(() => const AppBasePage(index: 2));
+                  },
+                  style: const ButtonStyle(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                  ),
+                  child: const Text(
+                    'Confirm',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                TextButton(
+                  onPressed: () {
+                    // Close the bottom sheet
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.close,
+                    size: 24.0,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 14.0),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

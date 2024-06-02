@@ -66,13 +66,6 @@ class BookNote {
   }
 }
 
-class AddBook {
-  int? bookId;
-  int? userId;
-  int? id;
-  String? note;
-}
-
 class AddorUpdateResponse {
   int? statusCode;
   String? message;
@@ -83,6 +76,21 @@ class AddorUpdateResponse {
   });
 
   AddorUpdateResponse.fromJson(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+  }
+}
+
+class DeleteNoteResponse {
+  int? statusCode;
+  String? message;
+
+  DeleteNoteResponse({
+    this.statusCode,
+    this.message,
+  });
+
+  DeleteNoteResponse.fromJson(Map<String, dynamic> json) {
     statusCode = json["statusCode"];
     message = json["message"];
   }
