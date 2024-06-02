@@ -17,4 +17,34 @@ class BooksApi {
     Book result = Book.fromJson(body["data"]);
     return result;
   }
+
+  Future<Books> getTopBooks(String userId, String token) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.get(
+      Uri.parse('${env["URL"]}${endpoints["top-books"]}'),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    Books result = Books.fromJson(body["data"]);
+    return result;
+  }
+
+  Future<Books> getBookById(
+    int bookId,
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.get(
+      Uri.parse('${env["URL"]}${endpoints["books"]}/$bookId'),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    Books result = Books.fromJson(body["data"]);
+    return result;
+  }
 }

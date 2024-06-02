@@ -3,6 +3,7 @@ Map<String, String> endpoints = {
   "register": "/api/register",
   "book-notes": "/api/book-notes",
   "books": "/api/books",
+  "top-books": "/api/top-books",
   "comments": "/api/comments",
 };
 
@@ -45,6 +46,7 @@ Map<String, String> alertDialog = {
   "addCommentSuccess": "Comment added successfully",
   "addNoteSuccess": "Note added successfully",
   "updateNoteSuccess": "Note updated successfully",
+  "deleteNoteSuccess": "Note deleted successfully",
   "invalidBook": "Select the book from suggestion",
   "deleteCommentSuccess": "Comment deleted successfully",
 };

@@ -46,14 +46,15 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
       _userId = userData["id"];
       _token = userData["token"];
     });
-    getMyNotesDo();
-    getMyCommentsDo();
+    await getMyNotesDo();
+    await getMyCommentsDo();
   }
 
   Future<void> getMyNotesDo() async {
     BookNotes data = await bookNotesApi.getNoteByQuery(
       {
         "userId": _userId,
+        "bookId": '',
         "limit": 100,
         "offset": 0,
       },
@@ -255,9 +256,11 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          notes[index]["comments"] <= 1
-                              ? '${notes[index]["comments"]} comment'
-                              : '${notes[index]["comments"]} comments',
+                          notes[index]["isPrivate"] == 1
+                              ? 'Private note'
+                              : notes[index]["comments"] <= 1
+                                  ? '${notes[index]["comments"]} comment'
+                                  : '${notes[index]["comments"]} comments',
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Theme.of(context).colorScheme.tertiary,
