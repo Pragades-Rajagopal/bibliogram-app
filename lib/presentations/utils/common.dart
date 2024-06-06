@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
-appBar({index = -1}) {
+appBar({index = -1, title = 'Bibliogram'}) {
   return AppBar(
     automaticallyImplyLeading: false,
-    title: const Text(
-      'Bibliogram',
-      style: TextStyle(
+    title: Text(
+      title,
+      style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20.0,
       ),

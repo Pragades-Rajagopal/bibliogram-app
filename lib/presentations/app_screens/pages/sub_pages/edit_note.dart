@@ -316,7 +316,7 @@ class _EditNotePageState extends State<EditNotePage> {
   AppBar _appBar(BuildContext context) {
     return AppBar(
       title: const Text(
-        'Bibliogram',
+        'Edit Note',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20.0,

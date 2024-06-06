@@ -280,7 +280,7 @@ class _BookPageState extends State<BookPage> {
   AppBar _appBar(BuildContext context) {
     return AppBar(
       title: const Text(
-        'Bibliogram',
+        'Book',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20.0,

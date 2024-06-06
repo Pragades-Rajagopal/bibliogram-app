@@ -26,6 +26,14 @@ class _AppBasePageState extends State<AppBasePage> {
     const SearchPage(),
   ];
 
+  // Titles
+  static final List<String> _titles = [
+    'Bibliogram',
+    'Top Books',
+    'My Activities',
+    'App Search'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +46,7 @@ class _AppBasePageState extends State<AppBasePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(index: _currentIndex),
+      appBar: appBar(index: _currentIndex, title: _titles[_currentIndex]),
       // extendBodyBehindAppBar: true,
       body: PageView(
         physics: const BouncingScrollPhysics(),

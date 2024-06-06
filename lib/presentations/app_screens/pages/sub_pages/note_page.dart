@@ -401,7 +401,7 @@ class _NotePageState extends State<NotePage> {
   AppBar _appBar(BuildContext context) {
     return AppBar(
       title: const Text(
-        'Bibliogram',
+        'Note',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20.0,
