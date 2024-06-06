@@ -5,6 +5,7 @@ Map<String, String> endpoints = {
   "books": "/api/books",
   "top-books": "/api/top-books",
   "comments": "/api/comments",
+  "search": "/api/search",
 };
 
 Map<String, String> apiHeader = {
