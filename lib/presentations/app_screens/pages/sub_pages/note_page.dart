@@ -283,110 +283,113 @@ class _NotePageState extends State<NotePage> {
         ),
       ),
       builder: (BuildContext context) {
-        return SizedBox(
-          height: 480,
-          child: Center(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Add comment',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  SizedBox(
-                    height: _maxLines * 24,
-                    width: 380.0,
-                    child: TextFormField(
-                      maxLines: _maxLines,
-                      controller: textController,
-                      style: const TextStyle(
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: 480,
+            child: Center(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Add comment',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 20.0,
                       ),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(10.0),
-                        errorStyle: const TextStyle(
-                          fontSize: 18.0,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      height: _maxLines * 24,
+                      child: TextFormField(
+                        maxLines: _maxLines,
+                        controller: textController,
+                        style: const TextStyle(
+                          fontSize: 20.0,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.tertiary,
-                            width: 1.0,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(10.0),
+                          errorStyle: const TextStyle(
+                            fontSize: 18.0,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.tertiary,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 1.0,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFFF0000),
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 1.0,
+                            ),
                           ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 1.0,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFFF0000),
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 1.0,
-                          ),
-                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return textFieldErrors["add_comment_mandatory"];
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return textFieldErrors["add_comment_mandatory"];
+                    ),
+                    const SizedBox(height: 14.0),
+                    TextButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          addCommentDo(textController.text, widget.noteId);
+                          setState(() {
+                            textController.text = "";
+                          });
+                          Navigator.pop(context);
                         }
-                        return null;
                       },
-                    ),
-                  ),
-                  const SizedBox(height: 14.0),
-                  TextButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        addCommentDo(textController.text, widget.noteId);
-                        setState(() {
-                          textController.text = "";
-                        });
-                        Navigator.pop(context);
-                      }
-                    },
-                    style: const ButtonStyle(
-                      splashFactory: NoSplash.splashFactory,
-                      overlayColor:
-                          MaterialStatePropertyAll(Colors.transparent),
-                    ),
-                    child: const Text(
-                      'Add',
-                      style: TextStyle(
-                        color: Colors.lightBlue,
-                        fontSize: 24.0,
+                      style: const ButtonStyle(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor:
+                            MaterialStatePropertyAll(Colors.transparent),
+                      ),
+                      child: const Text(
+                        'Add',
+                        style: TextStyle(
+                          color: Colors.lightBlue,
+                          fontSize: 24.0,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  TextButton(
-                    onPressed: () {
-                      // Close the bottom sheet
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Icons.close,
-                      size: 32.0,
-                      color: Theme.of(context).colorScheme.primary,
+                    const SizedBox(height: 10.0),
+                    TextButton(
+                      onPressed: () {
+                        // Close the bottom sheet
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        size: 32.0,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
