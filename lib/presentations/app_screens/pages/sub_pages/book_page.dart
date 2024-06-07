@@ -118,15 +118,17 @@ class _BookPageState extends State<BookPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      Text(
-                        bookInfo[0]["summary"],
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: Theme.of(context).colorScheme.tertiary,
-                          fontStyle: FontStyle.italic,
+                      if (bookInfo[0]["summary"] != null) ...{
+                        Text(
+                          bookInfo[0]["summary"],
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Theme.of(context).colorScheme.tertiary,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
+                      },
                       if (bookInfo[0]["rating"] != null) ...{
                         Text(
                           'Ratings - ${bookInfo[0]["rating"]}',
