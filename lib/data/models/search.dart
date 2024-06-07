@@ -5,6 +5,7 @@ class SearchResult {
     for (var i = 0; i < json.length; i++) {
       data.add({
         "type": json[i]["type"],
+        "id": json[i]["id"],
         "field1": json[i]["field1"],
         "field2": json[i]["field2"],
         "field3": json[i]["field3"],

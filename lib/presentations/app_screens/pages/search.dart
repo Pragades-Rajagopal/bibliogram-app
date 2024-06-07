@@ -1,7 +1,10 @@
 import 'package:bibliogram_app/data/local_storage/data.dart';
 import 'package:bibliogram_app/data/models/search.dart';
 import 'package:bibliogram_app/data/services/search.dart';
+import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/book_page.dart';
+import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/note_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -171,124 +174,151 @@ class _SearchPageState extends State<SearchPage> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: searchResult.length,
       itemBuilder: (context, index) {
-        return Card(
-          color: Theme.of(context).colorScheme.background,
-          margin: const EdgeInsets.symmetric(
-            horizontal: 2.0,
-            vertical: 5.0,
-          ),
-          shape: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.tertiary,
+        return GestureDetector(
+          onTap: () {
+            if (searchResult[index]["type"] == 'book') {
+              Get.to(() => BookPage(bookId: searchResult[index]["id"]));
+            } else if (searchResult[index]["type"] == 'note') {
+              Get.to(() => NotePage(noteId: searchResult[index]["id"]));
+            }
+          },
+          child: Card(
+            color: Theme.of(context).colorScheme.background,
+            margin: const EdgeInsets.symmetric(
+              horizontal: 2.0,
+              vertical: 5.0,
             ),
-          ),
-          shadowColor: Colors.transparent,
-          surfaceTintColor: Theme.of(context).colorScheme.background,
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-                  child: Text(
-                    searchResult[index]["type"],
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
-                ),
-                if (searchResult[index]["type"] == 'note') ...{
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                          child: Text(
-                            searchResult[index]["field3"],
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              // fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        searchResult[index]["field4"],
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          // fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                },
-                if (searchResult[index]["type"] == 'book') ...{
+            shape: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+            ),
+            shadowColor: Colors.transparent,
+            surfaceTintColor: Theme.of(context).colorScheme.background,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
                     child: Text(
-                      searchResult[index]["field1"],
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                } else if (searchResult[index]["type"] == 'note') ...{
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
-                    child: Text(
-                      searchResult[index]["field1"],
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                      ),
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                },
-                if (searchResult[index]["type"] == 'book') ...{
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                    child: Text(
-                      searchResult[index]["field4"],
+                      searchResult[index]["type"],
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
+                        fontStyle: FontStyle.italic,
+                        color: Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
                   ),
-                },
-                if (searchResult[index]["type"] == 'note') ...{
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                          child: Text(
-                            searchResult[index]["field2"],
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Theme.of(context).colorScheme.secondary,
+                  if (searchResult[index]["type"] == 'note') ...{
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: Text(
+                              searchResult[index]["field3"],
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                // fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Text(
-                        searchResult[index]["field5"],
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Theme.of(context).colorScheme.tertiary,
+                        Text(
+                          searchResult[index]["field4"],
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            // fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  },
+                  if (searchResult[index]["type"] == 'book') ...{
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+                      child: Text(
+                        searchResult[index]["field1"],
+                        style: const TextStyle(
+                          fontSize: 18.0,
                         ),
                       ),
-                    ],
-                  ),
-                },
-              ],
+                    ),
+                  } else if (searchResult[index]["type"] == 'note') ...{
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+                      child: Text(
+                        searchResult[index]["field1"],
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                        ),
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  },
+                  if (searchResult[index]["type"] == 'book') ...{
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 14, 6),
+                            child: Text(
+                              searchResult[index]["field4"],
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          searchResult[index]["field5"] == 0
+                              ? 'No notes added'
+                              : searchResult[index]["field5"] == 1
+                                  ? '${searchResult[index]["field5"]} note added'
+                                  : '${searchResult[index]["field5"]} notes added',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  },
+                  if (searchResult[index]["type"] == 'note') ...{
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: Text(
+                              searchResult[index]["field2"],
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          searchResult[index]["field5"],
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  },
+                ],
+              ),
             ),
           ),
         );
