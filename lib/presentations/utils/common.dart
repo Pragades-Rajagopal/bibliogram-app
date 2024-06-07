@@ -1,3 +1,4 @@
+import 'package:bibliogram_app/presentations/app_screens/pages/settings.dart';
 import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/add_note.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,7 +6,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 
 appBar({index = -1, title = 'Bibliogram'}) {
   return AppBar(
-    automaticallyImplyLeading: false,
+    automaticallyImplyLeading: index == 4 ? true : false,
     title: Text(
       title,
       style: const TextStyle(
@@ -37,6 +38,22 @@ appBar({index = -1, title = 'Bibliogram'}) {
         ),
       },
     ],
+    leading: index != 4
+        ? Padding(
+            padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+            child: IconButton(
+              onPressed: () {
+                Get.to(() => const SettingsPage());
+              },
+              icon: const Icon(
+                Icons.settings,
+                // size: 20,
+              ),
+              alignment: Alignment.center,
+              splashColor: Colors.transparent,
+            ),
+          )
+        : null,
   );
 }
 

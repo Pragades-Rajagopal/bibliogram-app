@@ -43,3 +43,21 @@ class RegistrationResponse {
     privateKey = json["privateKey"];
   }
 }
+
+class LogoutResponse {
+  int? statusCode;
+  String? message;
+  String? error;
+
+  LogoutResponse({
+    this.statusCode,
+    this.message,
+    this.error,
+  });
+
+  LogoutResponse.fromJSON(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+    error = json["error"];
+  }
+}

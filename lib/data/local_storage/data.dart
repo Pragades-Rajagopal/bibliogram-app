@@ -40,4 +40,38 @@ class UserToken {
       "token": token,
     };
   }
+
+  static Future<void> purgeTokenData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.remove('user_id');
+    await preferences.remove('fullname');
+    await preferences.remove('username');
+    await preferences.remove('token');
+  }
+}
+
+class SettingsData {
+  String? selectedTheme;
+
+  SettingsData({
+    this.selectedTheme,
+  });
+
+  static Future<void> storeSettingsData(String selectedTheme) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString('selected_theme', selectedTheme);
+  }
+
+  static Future<Map<String, dynamic>> getSettingsData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final selectedTheme = preferences.getString('selected_theme');
+    return {
+      "selectedTheme": selectedTheme,
+    };
+  }
+
+  static Future<void> purgeSettingsData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.remove('selected_theme');
+  }
 }

@@ -6,12 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 String? token;
+String? theme;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Get stored token data
   final userData = await UserToken.getStoreTokenData();
+  final appSettings = await SettingsData.getSettingsData();
   token = userData["token"];
+  theme = appSettings["selectedTheme"];
   runApp(const MyApp());
 }
 
@@ -29,6 +32,11 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
+      themeMode: theme == 'Follow system theme'
+          ? ThemeMode.system
+          : theme == 'Dark'
+              ? ThemeMode.dark
+              : ThemeMode.light,
       initialRoute: token == null ? '/' : 'app',
       routes: {
         "/": (context) => const LoginPage(),

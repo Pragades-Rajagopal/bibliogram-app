@@ -28,4 +28,22 @@ class UserApi {
     RegistrationResponse result = RegistrationResponse.fromJSON(body);
     return result;
   }
+
+  Future<LogoutResponse> logout(
+    Map<String, String> request,
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.post(
+      Uri.parse('${env["URL"]}${endpoints["logout"]}'),
+      headers: apiHeader,
+      body: json.encode(request),
+    );
+    var body = jsonDecode(response.body);
+    LogoutResponse result = LogoutResponse.fromJSON(body);
+    return result;
+  }
 }
