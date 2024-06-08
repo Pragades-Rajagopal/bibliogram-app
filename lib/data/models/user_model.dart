@@ -61,3 +61,18 @@ class LogoutResponse {
     error = json["error"];
   }
 }
+
+class DeactivateUserResponse {
+  int? statusCode;
+  String? message;
+
+  DeactivateUserResponse({
+    this.statusCode,
+    this.message,
+  });
+
+  DeactivateUserResponse.fromJSON(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+  }
+}

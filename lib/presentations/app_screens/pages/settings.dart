@@ -25,6 +25,14 @@ class _SettingsPageState extends State<SettingsPage> {
     'Light',
     'Dark',
   ];
+  String deactivateMessage = '''Deactivating the account means ...
+  - All your notes & comments will be lost
+  - You cannot reactivate later and this action is irreversible
+  ''';
+  String about = '''About
+  Developed by Sailors Dev with love
+  version 0.9beta
+  ''';
   // Services
   UserApi userApi = UserApi();
 
@@ -72,6 +80,31 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  Future<void> deactivateDo() async {
+    DeactivateUserResponse? response = await userApi.deactivate(
+      {
+        "userId": _userId,
+      },
+      _token,
+    );
+    if (response.statusCode == statusCode["serverError"]) {
+      showSnackBar(
+        '${alertDialog["oops"]}',
+        '${alertDialog["commonError"]}',
+        'error',
+      );
+    } else if (response.statusCode == statusCode["success"]) {
+      showSnackBar(
+        '${alertDialog["commonSuccess"]}',
+        '${alertDialog["deactivationSuccess"]}',
+        'success',
+      );
+      await UserToken.purgeTokenData();
+      await SettingsData.purgeSettingsData();
+      Get.offAll(() => const LoginPage());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,148 +114,162 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Container(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text.rich(
-                TextSpan(
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 18,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 18,
+                      ),
+                      children: <TextSpan>[
+                        const TextSpan(
+                          text: 'Logged in as ',
+                        ),
+                        TextSpan(
+                          text: name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' ( $username )',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  children: <TextSpan>[
-                    const TextSpan(
-                      text: 'Logged in as ',
-                    ),
-                    TextSpan(
-                      text: name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' ( $username )',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 14,
-              ),
-              const Text(
-                'App Theme',
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              SizedBox(
-                width: 280.0,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 0, 8, 4),
-                  child: DropdownButtonFormField(
-                    elevation: 2,
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  const Text(
+                    'App Theme',
                     style: TextStyle(
                       fontSize: 18.0,
-                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 4),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  SizedBox(
+                    width: 280.0,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 8, 4),
+                      child: DropdownButtonFormField(
+                        elevation: 2,
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 4),
+                        ),
+                        value: selectedTheme,
+                        onChanged: (String? newTheme) async {
+                          await SettingsData.storeSettingsData(newTheme!);
+                        },
+                        items: themes.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        icon: Icon(
+                          Icons.arrow_drop_down_sharp,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 28.0,
+                        ),
+                      ),
                     ),
-                    value: selectedTheme,
-                    onChanged: (String? newTheme) async {
-                      await SettingsData.storeSettingsData(newTheme!);
+                  ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  Text(
+                    'Close the app and reopen to apply the selected theme!',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 22.0,
+                  ),
+                  const Divider(thickness: 0.5),
+                  TextButton(
+                    onPressed: () {
+                      _showBottomSheet(context, 'logout');
                     },
-                    items: themes.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    icon: Icon(
-                      Icons.arrow_drop_down_sharp,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 28.0,
+                    style: const ButtonStyle(
+                      padding: MaterialStatePropertyAll(
+                        EdgeInsets.fromLTRB(0, 0, 18, 0),
+                      ),
+                      splashFactory: NoSplash.splashFactory,
+                      overlayColor:
+                          MaterialStatePropertyAll(Colors.transparent),
+                    ),
+                    child: const Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: Colors.red,
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
                     ),
                   ),
-                ),
+                  Text(
+                    'Hope you had noted down the Private key during the initial login!',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 22.0,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _showBottomSheet(context, 'deactivate');
+                    },
+                    style: const ButtonStyle(
+                      padding: MaterialStatePropertyAll(
+                        EdgeInsets.fromLTRB(0, 0, 18, 0),
+                      ),
+                      splashFactory: NoSplash.splashFactory,
+                      overlayColor:
+                          MaterialStatePropertyAll(Colors.transparent),
+                    ),
+                    child: const Text(
+                      'Deactivate',
+                      style: TextStyle(
+                        color: Colors.red,
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    deactivateMessage,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 14,
-              ),
+              const Divider(thickness: 0.5),
               Text(
-                'Close the app and reopen to apply the selected theme!',
+                about,
                 style: TextStyle(
                   fontSize: 16.0,
                   color: Theme.of(context).colorScheme.secondary,
                 ),
-              ),
-              const SizedBox(
-                height: 22.0,
-              ),
-              TextButton(
-                onPressed: () {
-                  _showBottomSheet(context, 'logout');
-                },
-                style: const ButtonStyle(
-                  padding: MaterialStatePropertyAll(
-                    EdgeInsets.fromLTRB(0, 0, 18, 0),
-                  ),
-                  splashFactory: NoSplash.splashFactory,
-                  overlayColor: MaterialStatePropertyAll(Colors.transparent),
-                ),
-                child: const Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.red,
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
-                  ),
-                ),
-              ),
-              Text(
-                'Hope you had noted down the Private key during the initial login!',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              const SizedBox(
-                height: 22.0,
-              ),
-              TextButton(
-                onPressed: () {
-                  _showBottomSheet(context, 'deactivate');
-                },
-                style: const ButtonStyle(
-                  padding: MaterialStatePropertyAll(
-                    EdgeInsets.fromLTRB(0, 0, 18, 0),
-                  ),
-                  splashFactory: NoSplash.splashFactory,
-                  overlayColor: MaterialStatePropertyAll(Colors.transparent),
-                ),
-                child: const Text(
-                  'Deactivate',
-                  style: TextStyle(
-                    color: Colors.red,
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
-                  ),
-                ),
-              ),
-              Text(
-                '''Deactivating the account means ...
-  - All your notes & comments will be lost
-  - You cannot reactivate later and this action is irreversible
-                ''',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -264,7 +311,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(height: 10.0),
                 TextButton(
                   onPressed: () async {
-                    actionType == 'logout' ? logoutDo() : print('deactivate');
+                    actionType == 'logout' ? logoutDo() : deactivateDo();
                   },
                   style: const ButtonStyle(
                     splashFactory: NoSplash.splashFactory,

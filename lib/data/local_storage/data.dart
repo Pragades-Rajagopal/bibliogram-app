@@ -64,7 +64,8 @@ class SettingsData {
 
   static Future<Map<String, dynamic>> getSettingsData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    final selectedTheme = preferences.getString('selected_theme');
+    final selectedTheme =
+        preferences.getString('selected_theme') ?? 'Follow system theme';
     return {
       "selectedTheme": selectedTheme,
     };

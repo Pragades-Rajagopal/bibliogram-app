@@ -46,4 +46,21 @@ class UserApi {
     LogoutResponse result = LogoutResponse.fromJSON(body);
     return result;
   }
+
+  Future<DeactivateUserResponse> deactivate(
+    Map<String, String> request,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = request["userId"]!;
+    var response = await http.post(
+      Uri.parse('${env["URL"]}${endpoints["deactivateUser"]}'),
+      headers: apiHeader,
+      body: json.encode(request),
+    );
+    var body = jsonDecode(response.body);
+    DeactivateUserResponse result = DeactivateUserResponse.fromJSON(body);
+    return result;
+  }
 }
