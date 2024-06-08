@@ -64,12 +64,10 @@ class _SearchPageState extends State<SearchPage> {
                   controller: textController,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(10.0),
-                    hintText: 'Search something...',
+                    hintText: 'Type something...',
                     hintStyle: TextStyle(
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
-                    filled: true,
-                    fillColor: Theme.of(context).colorScheme.surface,
                     prefixIcon: IconButton(
                       color: Theme.of(context).colorScheme.secondary,
                       icon: const Icon(Icons.clear),

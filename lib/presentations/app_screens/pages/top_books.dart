@@ -74,7 +74,7 @@ class _TopBooksPageState extends State<TopBooksPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Showing top 50 books',
+                        'Showing top ${booksList.length} books',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                           fontSize: 16.0,

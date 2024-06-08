@@ -137,8 +137,8 @@ const bottomNavBar = <BottomNavigationBarItem>[
     label: 'My Activities',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.search),
-    activeIcon: Icon(Icons.search_rounded),
-    label: 'Search',
+    icon: Icon(Icons.explore_outlined),
+    activeIcon: Icon(Icons.explore_rounded),
+    label: 'Explore',
   ),
 ];

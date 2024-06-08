@@ -31,6 +31,8 @@ class _NotePageState extends State<NotePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final textController = TextEditingController();
   static const _maxLines = 10;
+  // State variables
+  bool _isApiLoading = true;
 
   @override
   void initState() {
@@ -46,6 +48,9 @@ class _NotePageState extends State<NotePage> {
     });
     await getNoteByIdDo(widget.noteId);
     await getCommentsForNote(widget.noteId);
+    setState(() {
+      _isApiLoading = false;
+    });
   }
 
   Future<void> getNoteByIdDo(int noteId) async {
@@ -101,92 +106,98 @@ class _NotePageState extends State<NotePage> {
     return Scaffold(
       appBar: _appBar(context),
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text.rich(
-                TextSpan(
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontSize: 20,
-                  ),
-                  children: <TextSpan>[
-                    const TextSpan(
-                      text: 'Notes about ',
+      body: _isApiLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            )
+          : SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 20,
+                        ),
+                        children: <TextSpan>[
+                          const TextSpan(
+                            text: 'Notes about ',
+                          ),
+                          TextSpan(
+                            text: '${bookNote?.bookName}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const TextSpan(
+                            text: ' by ',
+                          ),
+                          TextSpan(
+                            text: '${bookNote?.author}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    TextSpan(
-                      text: '${bookNote?.bookName}',
+                    const SizedBox(
+                      height: 14.0,
+                    ),
+                    Text(
+                      '${bookNote?.notes}',
                       style: const TextStyle(
+                        fontSize: 22.0,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 14.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: Text(
+                              'From ${bookNote?.user}',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '${bookNote?.shortDate}',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 24.0,
+                    ),
+                    Text(
+                      'Comments (${comments.length})',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const TextSpan(
-                      text: ' by ',
-                    ),
-                    TextSpan(
-                      text: '${bookNote?.author}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    commentsList(comments),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 14.0,
-              ),
-              Text(
-                '${bookNote?.notes}',
-                style: const TextStyle(
-                  fontSize: 22.0,
-                ),
-              ),
-              const SizedBox(
-                height: 14.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                      child: Text(
-                        'From ${bookNote?.user}',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    '${bookNote?.shortDate}',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 24.0,
-              ),
-              Text(
-                'Comments (${comments.length})',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              commentsList(comments),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 

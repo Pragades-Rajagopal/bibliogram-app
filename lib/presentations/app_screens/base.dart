@@ -31,7 +31,7 @@ class _AppBasePageState extends State<AppBasePage> {
     'Bibliogram',
     'Top Books',
     'My Activities',
-    'App Search'
+    'Explore'
   ];
 
   @override

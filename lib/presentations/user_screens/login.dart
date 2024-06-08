@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(index: 4),
       body: Center(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

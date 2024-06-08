@@ -148,7 +148,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 height: 14.0,
               ),
               SizedBox(
-                width: 380.0,
+                width: double.infinity,
                 child: TextFormField(
                   key: _key,
                   maxLines: _maxLines,
@@ -192,7 +192,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 height: 12.0,
               ),
               SizedBox(
-                width: 400.0,
+                width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

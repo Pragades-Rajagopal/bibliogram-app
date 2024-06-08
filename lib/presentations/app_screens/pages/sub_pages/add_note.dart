@@ -112,7 +112,7 @@ class _AddNotePageState extends State<AddNotePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 380.0,
+                  width: double.infinity,
                   child: SimpleAutoCompleteTextField(
                     key: _bookKey,
                     controller: bookController,
@@ -156,7 +156,7 @@ class _AddNotePageState extends State<AddNotePage> {
                   height: 14.0,
                 ),
                 SizedBox(
-                  width: 380.0,
+                  width: double.infinity,
                   child: TextFormField(
                     key: _key,
                     maxLines: _maxLines,
@@ -200,7 +200,7 @@ class _AddNotePageState extends State<AddNotePage> {
                   height: 12.0,
                 ),
                 SizedBox(
-                  width: 400.0,
+                  width: double.infinity,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
