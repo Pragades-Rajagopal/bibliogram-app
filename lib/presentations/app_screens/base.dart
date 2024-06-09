@@ -51,12 +51,13 @@ class _AppBasePageState extends State<AppBasePage> {
       body: PageView(
         physics: const BouncingScrollPhysics(),
         controller: _pageController,
-        children: _widget,
         onPageChanged: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
+        allowImplicitScrolling: true,
+        children: _widget,
       ),
       bottomNavigationBar: Theme(
         data: ThemeData(

@@ -5,12 +5,14 @@ import 'package:bibliogram_app/data/models/book_notes.dart';
 import 'package:http/http.dart' as http;
 
 class BookNotesApi {
-  Future<BookNotes> getGlobalNotes(String userId, String token) async {
+  Future<BookNotes> getGlobalNotes(
+      String userId, String token, int limit, int offset) async {
     final env = await accessENV(assetFileName: '.env');
     apiHeader["Authorization"] = 'Bearer $token';
     apiHeader["userId"] = userId;
     var response = await http.get(
-      Uri.parse('${env["URL"]}${endpoints["book-notes"]}'),
+      Uri.parse(
+          '${env["URL"]}${endpoints["book-notes"]}?limit=$limit&offset=$offset'),
       headers: apiHeader,
     );
     var body = jsonDecode(response.body);
