@@ -101,6 +101,38 @@ class _NotePageState extends State<NotePage> {
     }
   }
 
+  Future<void> saveNoteForLaterDo(int noteId) async {
+    SaveNoteForLaterResponse response = await bookNotesApi.saveNoteForLater(
+      {
+        "userId": _userId,
+        "noteId": noteId,
+      },
+      _userId,
+      _token,
+    );
+    if (response.statusCode == statusCode["serverError"]) {
+      showSnackBar(
+        '${alertDialog["oops"]}',
+        '${alertDialog["commonError"]}',
+        'error',
+      );
+    } else if (response.statusCode == statusCode["error"]) {
+      showSnackBar(
+        '${alertDialog["relax"]}',
+        '${alertDialog["noteAlreadySaved"]}',
+        'success',
+      );
+      await getNoteByIdDo(widget.noteId);
+      await getCommentsForNote(widget.noteId);
+    } else if (response.statusCode == statusCode["success"]) {
+      showSnackBar(
+        '${alertDialog["commonSuccess"]}',
+        '${alertDialog["savedForLater"]}',
+        'success',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -420,23 +452,30 @@ class _NotePageState extends State<NotePage> {
       ),
       centerTitle: true,
       actions: [
-        TextButton(
+        IconButton(
+          padding: const EdgeInsets.fromLTRB(0, 4, 18, 0),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
           onPressed: () {
             _showBottomSheet(context);
           },
-          style: const ButtonStyle(
-            padding: MaterialStatePropertyAll(
-              EdgeInsets.fromLTRB(0, 4, 18, 0),
-            ),
-            splashFactory: NoSplash.splashFactory,
-            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          icon: const Icon(
+            Icons.comment_bank_outlined,
+            color: Colors.blue,
+            size: 24.0,
           ),
-          child: const Text(
-            'Comment',
-            style: TextStyle(
-              color: Colors.lightBlue,
-              fontSize: 18.0,
-            ),
+        ),
+        IconButton(
+          padding: const EdgeInsets.fromLTRB(0, 4, 18, 0),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onPressed: () {
+            saveNoteForLaterDo(widget.noteId);
+          },
+          icon: const Icon(
+            Icons.bookmark_add_outlined,
+            color: Colors.blue,
+            size: 26.0,
           ),
         ),
       ],

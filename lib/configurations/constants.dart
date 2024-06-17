@@ -2,6 +2,7 @@ Map<String, String> endpoints = {
   "login": "/api/login",
   "register": "/api/register",
   "book-notes": "/api/book-notes",
+  "save-note": "/api/save-later",
   "books": "/api/books",
   "top-books": "/api/top-books",
   "comments": "/api/comments",
@@ -50,6 +51,8 @@ Map<String, String> alertDialog = {
   "addNoteSuccess": "Note added successfully",
   "updateNoteSuccess": "Note updated successfully",
   "deleteNoteSuccess": "Note deleted successfully",
+  "savedForLater": "Note saved for later",
+  "noteAlreadySaved": "Note saved already",
   "invalidBook": "Select the book from suggestion",
   "deleteCommentSuccess": "Comment deleted successfully",
 };

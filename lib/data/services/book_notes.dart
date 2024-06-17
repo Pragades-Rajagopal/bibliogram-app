@@ -85,4 +85,39 @@ class BookNotesApi {
     DeleteNoteResponse result = DeleteNoteResponse.fromJson(body);
     return result;
   }
+
+  //Save note for later
+  Future<SaveNoteForLaterResponse> saveNoteForLater(
+    Map<String, dynamic> request,
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.post(
+      Uri.parse('${env["URL"]}${endpoints["save-note"]}'),
+      headers: apiHeader,
+      body: json.encode(request),
+    );
+    var body = jsonDecode(response.body);
+    SaveNoteForLaterResponse result = SaveNoteForLaterResponse.fromJson(body);
+    return result;
+  }
+
+  Future<BookNotes> getSavedNotesForLater(
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.get(
+      Uri.parse('${env["URL"]}${endpoints["save-note"]}/$userId'),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    BookNotes result = BookNotes.fromJson(body["data"]);
+    return result;
+  }
 }

@@ -95,3 +95,24 @@ class DeleteNoteResponse {
     message = json["message"];
   }
 }
+
+class SaveNoteForLaterResponse {
+  int? statusCode;
+  String? message;
+  String? error;
+  String? code;
+
+  SaveNoteForLaterResponse({
+    this.statusCode,
+    this.message,
+    this.error,
+    this.code,
+  });
+
+  SaveNoteForLaterResponse.fromJson(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+    error = json["error"];
+    code = json["code"];
+  }
+}

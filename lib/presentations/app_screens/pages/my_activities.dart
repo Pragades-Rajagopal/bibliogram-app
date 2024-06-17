@@ -5,6 +5,7 @@ import 'package:bibliogram_app/data/models/comment.dart';
 import 'package:bibliogram_app/data/services/book_notes.dart';
 import 'package:bibliogram_app/data/services/comments.dart';
 import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/edit_note.dart';
+import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/note_page.dart';
 import 'package:bibliogram_app/presentations/utils/common.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,20 +20,16 @@ class MyActivitiesPage extends StatefulWidget {
 class _MyActivitiesPageState extends State<MyActivitiesPage> {
   String _userId = '';
   String _token = '';
-  final int _notesMaxLines = 10;
+  final int _notesMaxLines = 6;
   // Service variables
   BookNotesApi bookNotesApi = BookNotesApi();
   CommentsApi commentsApi = CommentsApi();
   List<Map<String, dynamic>> myNotes = [];
+  List<Map<String, dynamic>> savedNotes = [];
   List<Map<String, dynamic>> myComments = [];
   // State variables
-  bool _isApiLoading = true;
-
-  switchLoadingIndicator() {
-    setState(() {
-      _isApiLoading = !_isApiLoading;
-    });
-  }
+  bool _myNotesisApiLoading = true;
+  bool _savedNotesisApiLoading = true;
 
   @override
   void initState() {
@@ -48,6 +45,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
     });
     await getMyNotesDo();
     await getMyCommentsDo();
+    await getSavedNotesForLaterDo();
   }
 
   Future<void> getMyNotesDo() async {
@@ -64,7 +62,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
     setState(() {
       myNotes.clear();
       myNotes.addAll(data.data);
-      _isApiLoading = false;
+      _myNotesisApiLoading = false;
     });
   }
 
@@ -82,7 +80,19 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
     setState(() {
       myComments.clear();
       myComments.addAll(data.data);
-      _isApiLoading = false;
+      _myNotesisApiLoading = false;
+    });
+  }
+
+  Future<void> getSavedNotesForLaterDo() async {
+    BookNotes data = await bookNotesApi.getSavedNotesForLater(
+      _userId,
+      _token,
+    );
+    setState(() {
+      savedNotes.clear();
+      savedNotes.addAll(data.data);
+      _savedNotesisApiLoading = false;
     });
   }
 
@@ -109,64 +119,117 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      body: RefreshIndicator(
-        displacement: Scaffold.of(context).appBarMaxHeight ?? 40.0,
-        onRefresh: () async {
-          await getMyNotesDo();
-          await getMyCommentsDo();
-        },
-        color: Theme.of(context).colorScheme.secondary,
-        child: _isApiLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              )
-            : SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Your notes',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      notesViewList(myNotes),
-                      const SizedBox(
-                        height: 14.0,
-                      ),
-                      Text(
-                        'Your comments',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      myCommentsList(myComments),
-                    ],
-                  ),
-                ),
-              ),
+    final List<Widget> tabs = [
+      myNotesSection(context),
+      savedNotesSection(context)
+    ];
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+          elevation: 0,
+          bottom: const TabBar(
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+            tabs: [
+              Tab(text: 'My Notes'),
+              Tab(text: 'Saved Notes'),
+            ],
+          ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: TabBarView(children: tabs),
       ),
     );
   }
 
-  Widget notesViewList(List notes) {
+  RefreshIndicator myNotesSection(BuildContext context) {
+    return RefreshIndicator(
+      displacement: Scaffold.of(context).appBarMaxHeight ?? 40.0,
+      onRefresh: () async {
+        await getMyNotesDo();
+        await getMyCommentsDo();
+      },
+      color: Theme.of(context).colorScheme.secondary,
+      child: _myNotesisApiLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            )
+          : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    notesViewList(myNotes, 0),
+                    const SizedBox(
+                      height: 14.0,
+                    ),
+                    Text(
+                      'Your comments',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    myCommentsList(myComments),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+
+  RefreshIndicator savedNotesSection(BuildContext context) {
+    return RefreshIndicator(
+      displacement: Scaffold.of(context).appBarMaxHeight ?? 40.0,
+      onRefresh: () async {
+        await getSavedNotesForLaterDo();
+      },
+      color: Theme.of(context).colorScheme.secondary,
+      child: _savedNotesisApiLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            )
+          : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    notesViewList(savedNotes, 1),
+                    const SizedBox(
+                      height: 14.0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+
+  /// section defines if it belongs to My notes or Saved note
+  Widget notesViewList(List notes, int section) {
     if (notes.isEmpty) {
       return Container(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 14),
         alignment: Alignment.center,
         child: Text(
-          'Create your first note',
+          section == 0 ? 'Create your first note' : 'No notes saved yet',
           style: TextStyle(
             fontSize: 16.0,
             color: Theme.of(context).colorScheme.secondary,
@@ -182,16 +245,20 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Get.to(
-                () => EditNotePage(
-                  noteId: notes[index]["id"],
-                  bookId: notes[index]["bookId"],
-                  bookName: notes[index]["bookName"],
-                  author: notes[index]["author"],
-                  note: notes[index]["notes"],
-                  isPrivate: notes[index]["isPrivate"],
-                ),
-              );
+              if (section == 0) {
+                Get.to(
+                  () => EditNotePage(
+                    noteId: notes[index]["id"],
+                    bookId: notes[index]["bookId"],
+                    bookName: notes[index]["bookName"],
+                    author: notes[index]["author"],
+                    note: notes[index]["notes"],
+                    isPrivate: notes[index]["isPrivate"],
+                  ),
+                );
+              } else if (section == 1) {
+                Get.to(() => NotePage(noteId: notes[index]["id"]));
+              }
             },
             child: Card(
               color: Theme.of(context).colorScheme.background,
@@ -252,29 +319,72 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                     const SizedBox(
                       height: 8.0,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          notes[index]["isPrivate"] == 1
-                              ? 'Private note'
-                              : notes[index]["comments"] <= 1
-                                  ? '${notes[index]["comments"]} comment'
-                                  : '${notes[index]["comments"]} comments',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Theme.of(context).colorScheme.tertiary,
+                    if (section == 0) ...{
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            notes[index]["isPrivate"] == 1
+                                ? 'Private note'
+                                : notes[index]["comments"] <= 1
+                                    ? '${notes[index]["comments"]} comment'
+                                    : '${notes[index]["comments"]} comments',
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
                           ),
-                        ),
-                        Text(
-                          notes[index]["shortDate"],
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Theme.of(context).colorScheme.tertiary,
+                          Text(
+                            notes[index]["shortDate"],
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
                           ),
+                        ],
+                      ),
+                    } else if (section == 1) ...{
+                      const SizedBox(
+                        height: 6.0,
+                      ),
+                      Text(
+                        notes[index]["comments"] <= 1
+                            ? '${notes[index]["comments"]} comment'
+                            : '${notes[index]["comments"]} comments',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 4.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                              child: Text(
+                                notes[index]["user"],
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            notes[index]["shortDate"],
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    }
                   ],
                 ),
               ),
