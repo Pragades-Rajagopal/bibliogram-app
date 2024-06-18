@@ -120,4 +120,21 @@ class BookNotesApi {
     BookNotes result = BookNotes.fromJson(body["data"]);
     return result;
   }
+
+  Future<DeleteSavedNoteResponse> deleteSavedNote(
+    int noteId,
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.delete(
+      Uri.parse('${env["URL"]}${endpoints["save-note"]}/$noteId/$userId'),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    DeleteSavedNoteResponse result = DeleteSavedNoteResponse.fromJson(body);
+    return result;
+  }
 }

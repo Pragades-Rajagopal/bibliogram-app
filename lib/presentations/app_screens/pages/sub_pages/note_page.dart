@@ -460,7 +460,7 @@ class _NotePageState extends State<NotePage> {
             _showBottomSheet(context);
           },
           icon: const Icon(
-            Icons.comment_bank_outlined,
+            Icons.mode_comment_outlined,
             color: Colors.blue,
             size: 24.0,
           ),

@@ -53,6 +53,7 @@ Map<String, String> alertDialog = {
   "deleteNoteSuccess": "Note deleted successfully",
   "savedForLater": "Note saved for later",
   "noteAlreadySaved": "Note saved already",
+  "savedNoteRemoved": "Note unsaved",
   "invalidBook": "Select the book from suggestion",
   "deleteCommentSuccess": "Comment deleted successfully",
 };

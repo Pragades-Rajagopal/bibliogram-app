@@ -117,11 +117,32 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
     }
   }
 
+  Future<void> deleteSavedNoteDo(int noteId) async {
+    DeleteSavedNoteResponse? deleteResp = await bookNotesApi.deleteSavedNote(
+      noteId,
+      _userId,
+      _token,
+    );
+    if (deleteResp.statusCode == statusCode["serverError"]) {
+      showSnackBar(
+        '${alertDialog["oops"]}',
+        '${alertDialog["commonError"]}',
+        'error',
+      );
+    } else {
+      showSnackBar(
+        '${alertDialog["commonSuccess"]}',
+        '${alertDialog["savedNoteRemoved"]}',
+        'success',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> tabs = [
       myNotesSection(context),
-      savedNotesSection(context)
+      savedNotesSection(context),
     ];
     return DefaultTabController(
       length: tabs.length,
@@ -129,13 +150,14 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
         appBar: AppBar(
           toolbarHeight: 0,
           elevation: 0,
-          bottom: const TabBar(
+          bottom: TabBar(
             splashFactory: NoSplash.splashFactory,
-            overlayColor: MaterialStatePropertyAll(Colors.transparent),
-            tabs: [
+            overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+            tabs: const [
               Tab(text: 'My Notes'),
               Tab(text: 'Saved Notes'),
             ],
+            unselectedLabelColor: Theme.of(context).colorScheme.secondary,
           ),
         ),
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -168,7 +190,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                     const SizedBox(
                       height: 8.0,
                     ),
-                    notesViewList(myNotes, 0),
+                    myNotesViewList(myNotes),
                     const SizedBox(
                       height: 14.0,
                     ),
@@ -211,7 +233,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                     const SizedBox(
                       height: 8.0,
                     ),
-                    notesViewList(savedNotes, 1),
+                    savedNotesViewList(savedNotes),
                     const SizedBox(
                       height: 14.0,
                     ),
@@ -222,14 +244,14 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
     );
   }
 
-  /// section defines if it belongs to My notes or Saved note
-  Widget notesViewList(List notes, int section) {
+  /// My notes list
+  Widget myNotesViewList(List notes) {
     if (notes.isEmpty) {
       return Container(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 14),
         alignment: Alignment.center,
         child: Text(
-          section == 0 ? 'Create your first note' : 'No notes saved yet',
+          'Create your first note',
           style: TextStyle(
             fontSize: 16.0,
             color: Theme.of(context).colorScheme.secondary,
@@ -245,20 +267,16 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              if (section == 0) {
-                Get.to(
-                  () => EditNotePage(
-                    noteId: notes[index]["id"],
-                    bookId: notes[index]["bookId"],
-                    bookName: notes[index]["bookName"],
-                    author: notes[index]["author"],
-                    note: notes[index]["notes"],
-                    isPrivate: notes[index]["isPrivate"],
-                  ),
-                );
-              } else if (section == 1) {
-                Get.to(() => NotePage(noteId: notes[index]["id"]));
-              }
+              Get.to(
+                () => EditNotePage(
+                  noteId: notes[index]["id"],
+                  bookId: notes[index]["bookId"],
+                  bookName: notes[index]["bookName"],
+                  author: notes[index]["author"],
+                  note: notes[index]["notes"],
+                  isPrivate: notes[index]["isPrivate"],
+                ),
+              );
             },
             child: Card(
               color: Theme.of(context).colorScheme.background,
@@ -319,31 +337,158 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                     const SizedBox(
                       height: 8.0,
                     ),
-                    if (section == 0) ...{
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          notes[index]["isPrivate"] == 1
+                              ? 'Private note'
+                              : notes[index]["comments"] <= 1
+                                  ? '${notes[index]["comments"]} comment'
+                                  : '${notes[index]["comments"]} comments',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                        Text(
+                          notes[index]["shortDate"],
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  /// section defines if it belongs to My notes or Saved note
+  Widget savedNotesViewList(List notes) {
+    if (notes.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 14),
+        alignment: Alignment.center,
+        child: Text(
+          'No notes saved yet',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    } else {
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: notes.length,
+        itemBuilder: (context, index) {
+          final noteId = notes[index]["id"];
+          return GestureDetector(
+            onTap: () {
+              Get.to(() => NotePage(noteId: notes[index]["id"]))
+                  ?.then((_) async {
+                await getSavedNotesForLaterDo();
+              });
+            },
+            child: Dismissible(
+              key: Key(noteId.toString()),
+              onDismissed: (direction) async {
+                setState(() {
+                  notes.removeAt(index);
+                });
+                await deleteSavedNoteDo(noteId);
+              },
+              direction: DismissDirection.endToStart,
+              background: Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                padding: const EdgeInsets.only(right: 14.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                  color: const Color.fromARGB(255, 246, 190, 106),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Remove',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              child: Card(
+                color: Theme.of(context).colorScheme.background,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 2.0,
+                  vertical: 5.0,
+                ),
+                shape: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                ),
+                shadowColor: Colors.transparent,
+                surfaceTintColor: Theme.of(context).colorScheme.background,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            notes[index]["isPrivate"] == 1
-                                ? 'Private note'
-                                : notes[index]["comments"] <= 1
-                                    ? '${notes[index]["comments"]} comment'
-                                    : '${notes[index]["comments"]} comments',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Theme.of(context).colorScheme.tertiary,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                              child: Text(
+                                notes[index]["bookName"],
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
                             ),
                           ),
                           Text(
-                            notes[index]["shortDate"],
+                            notes[index]["author"],
                             style: TextStyle(
-                              fontSize: 14.0,
-                              color: Theme.of(context).colorScheme.tertiary,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
                       ),
-                    } else if (section == 1) ...{
+                      const SizedBox(
+                        height: 4.0,
+                      ),
+                      Text(
+                        notes[index]["notes"],
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        maxLines: _notesMaxLines,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
                       const SizedBox(
                         height: 6.0,
                       ),
@@ -384,8 +529,8 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                           ),
                         ],
                       ),
-                    }
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
