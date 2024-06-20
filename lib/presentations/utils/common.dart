@@ -1,3 +1,4 @@
+import 'package:bibliogram_app/presentations/app_screens/pages/search.dart';
 import 'package:bibliogram_app/presentations/app_screens/pages/settings.dart';
 import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/add_note.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,27 @@ appBar({index = -1, title = 'Bibliogram'}) {
     ),
     centerTitle: true,
     actions: [
-      if (index == 2) ...{
+      if (index == 1) ...{
+        TextButton(
+          onPressed: () {
+            Get.to(() => const SearchPage());
+          },
+          style: const ButtonStyle(
+            padding: MaterialStatePropertyAll(
+              EdgeInsets.fromLTRB(0, 4, 18, 0),
+            ),
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
+          child: const Text(
+            'Search',
+            style: TextStyle(
+              color: Colors.lightBlue,
+              fontSize: 18.0,
+            ),
+          ),
+        ),
+      } else if (index == 2) ...{
         TextButton(
           onPressed: () {
             Get.to(() => const AddNotePage());
@@ -127,18 +148,13 @@ const bottomNavBar = <BottomNavigationBarItem>[
     label: 'Around Me',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.book_outlined),
-    activeIcon: Icon(Icons.book_rounded),
-    label: 'Top Books',
+    icon: Icon(Icons.explore_outlined),
+    activeIcon: Icon(Icons.explore_rounded),
+    label: 'Explore',
   ),
   BottomNavigationBarItem(
     icon: Icon(Icons.featured_play_list_outlined),
     activeIcon: Icon(Icons.featured_play_list_rounded),
     label: 'My Activities',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.explore_outlined),
-    activeIcon: Icon(Icons.explore_rounded),
-    label: 'Explore',
   ),
 ];

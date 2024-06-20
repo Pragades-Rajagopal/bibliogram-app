@@ -50,6 +50,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _appBar(),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -321,6 +322,19 @@ class _SearchPageState extends State<SearchPage> {
           ),
         );
       },
+    );
+  }
+
+  AppBar _appBar() {
+    return AppBar(
+      title: const Text(
+        'Search',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20.0,
+        ),
+      ),
+      centerTitle: true,
     );
   }
 }

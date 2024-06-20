@@ -5,14 +5,14 @@ import 'package:bibliogram_app/presentations/app_screens/pages/sub_pages/book_pa
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TopBooksPage extends StatefulWidget {
-  const TopBooksPage({super.key});
+class ExplorePage extends StatefulWidget {
+  const ExplorePage({super.key});
 
   @override
-  State<TopBooksPage> createState() => _TopBooksPageState();
+  State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _TopBooksPageState extends State<TopBooksPage> {
+class _ExplorePageState extends State<ExplorePage> {
   String _userId = '';
   String _token = '';
   // Service variables
@@ -74,7 +74,7 @@ class _TopBooksPageState extends State<TopBooksPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Showing top ${booksList.length} books',
+                        'Explore top ${booksList.length} books',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                           fontSize: 16.0,
