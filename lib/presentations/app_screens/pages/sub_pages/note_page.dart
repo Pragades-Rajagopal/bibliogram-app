@@ -325,7 +325,7 @@ class _NotePageState extends State<NotePage> {
           topRight: Radius.circular(20),
         ),
       ),
-      builder: (BuildContext context) {
+      builder: (context) {
         return SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: SizedBox(
@@ -464,6 +464,7 @@ class _NotePageState extends State<NotePage> {
             color: Colors.blue,
             size: 24.0,
           ),
+          tooltip: 'Comment',
         ),
         IconButton(
           padding: const EdgeInsets.fromLTRB(0, 4, 18, 0),
@@ -477,6 +478,7 @@ class _NotePageState extends State<NotePage> {
             color: Colors.blue,
             size: 26.0,
           ),
+          tooltip: 'Save for later',
         ),
       ],
     );

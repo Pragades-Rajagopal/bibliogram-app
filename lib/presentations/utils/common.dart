@@ -63,6 +63,7 @@ appBar({index = -1, title = 'Bibliogram'}) {
         ? Padding(
             padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
             child: IconButton(
+              tooltip: 'Settings',
               onPressed: () {
                 Get.to(() => const SettingsPage());
               },
@@ -72,6 +73,7 @@ appBar({index = -1, title = 'Bibliogram'}) {
               ),
               alignment: Alignment.center,
               splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
             ),
           )
         : null,
