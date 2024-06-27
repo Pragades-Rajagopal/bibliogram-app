@@ -137,4 +137,21 @@ class BookNotesApi {
     DeleteSavedNoteResponse result = DeleteSavedNoteResponse.fromJson(body);
     return result;
   }
+
+  Future<IsSavedNoteResponse> isSavedNote(
+    int noteId,
+    String userId,
+    String token,
+  ) async {
+    final env = await accessENV(assetFileName: '.env');
+    apiHeader["Authorization"] = 'Bearer $token';
+    apiHeader["userId"] = userId;
+    var response = await http.get(
+      Uri.parse('${env["URL"]}${endpoints["is-saved-note"]}/$noteId/$userId'),
+      headers: apiHeader,
+    );
+    var body = jsonDecode(response.body);
+    IsSavedNoteResponse result = IsSavedNoteResponse.fromJson(body);
+    return result;
+  }
 }

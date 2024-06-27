@@ -3,6 +3,7 @@ Map<String, String> endpoints = {
   "register": "/api/register",
   "book-notes": "/api/book-notes",
   "save-note": "/api/save-later",
+  "is-saved-note": "/api/is-saved-note",
   "books": "/api/books",
   "top-books": "/api/top-books",
   "comments": "/api/comments",

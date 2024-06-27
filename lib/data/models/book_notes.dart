@@ -131,3 +131,21 @@ class DeleteSavedNoteResponse {
     message = json["message"];
   }
 }
+
+class IsSavedNoteResponse {
+  int? statusCode;
+  String? message;
+  int? value;
+
+  IsSavedNoteResponse({
+    this.statusCode,
+    this.message,
+    this.value,
+  });
+
+  IsSavedNoteResponse.fromJson(Map<String, dynamic> json) {
+    statusCode = json["statusCode"];
+    message = json["message"];
+    value = json["value"];
+  }
+}

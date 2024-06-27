@@ -419,7 +419,7 @@ class _MyActivitiesPageState extends State<MyActivitiesPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Remove',
+                      'Unsave',
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.black,

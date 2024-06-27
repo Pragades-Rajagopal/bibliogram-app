@@ -27,6 +27,7 @@ class _NotePageState extends State<NotePage> {
   CommentsApi commentsApi = CommentsApi();
   List<Map<String, dynamic>> comments = [];
   AddCommentResponse? addCommentResp;
+  bool _isSavedNote = false;
   // Add comment variables
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final textController = TextEditingController();
@@ -48,9 +49,42 @@ class _NotePageState extends State<NotePage> {
     });
     await getNoteByIdDo(widget.noteId);
     await getCommentsForNote(widget.noteId);
+    await isSavedNoteDo(widget.noteId);
     setState(() {
       _isApiLoading = false;
     });
+  }
+
+  Future<void> isSavedNoteDo(int noteId) async {
+    IsSavedNoteResponse response =
+        await bookNotesApi.isSavedNote(noteId, _userId, _token);
+    setState(() {
+      _isSavedNote = response.value == 1 ? true : false;
+    });
+  }
+
+  Future<void> deleteSavedNoteDo(int noteId) async {
+    DeleteSavedNoteResponse? deleteResp = await bookNotesApi.deleteSavedNote(
+      noteId,
+      _userId,
+      _token,
+    );
+    if (deleteResp.statusCode == statusCode["serverError"]) {
+      showSnackBar(
+        '${alertDialog["oops"]}',
+        '${alertDialog["commonError"]}',
+        'error',
+      );
+    } else {
+      showSnackBar(
+        '${alertDialog["commonSuccess"]}',
+        '${alertDialog["savedNoteRemoved"]}',
+        'success',
+      );
+      setState(() {
+        _isSavedNote = false;
+      });
+    }
   }
 
   Future<void> getNoteByIdDo(int noteId) async {
@@ -130,6 +164,9 @@ class _NotePageState extends State<NotePage> {
         '${alertDialog["savedForLater"]}',
         'success',
       );
+      setState(() {
+        _isSavedNote = true;
+      });
     }
   }
 
@@ -466,20 +503,35 @@ class _NotePageState extends State<NotePage> {
           ),
           tooltip: 'Comment',
         ),
-        IconButton(
-          padding: const EdgeInsets.fromLTRB(0, 4, 18, 0),
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onPressed: () {
-            saveNoteForLaterDo(widget.noteId);
-          },
-          icon: const Icon(
-            Icons.bookmark_add_outlined,
-            color: Colors.blue,
-            size: 26.0,
-          ),
-          tooltip: 'Save for later',
-        ),
+        _isSavedNote
+            ? IconButton(
+                padding: const EdgeInsets.fromLTRB(0, 4, 18, 0),
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: () async {
+                  await deleteSavedNoteDo(widget.noteId);
+                },
+                icon: const Icon(
+                  Icons.bookmark_added_rounded,
+                  color: Colors.blue,
+                  size: 26.0,
+                ),
+                tooltip: 'Note saved for later',
+              )
+            : IconButton(
+                padding: const EdgeInsets.fromLTRB(0, 4, 18, 0),
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: () async {
+                  await saveNoteForLaterDo(widget.noteId);
+                },
+                icon: const Icon(
+                  Icons.bookmark_add_outlined,
+                  color: Colors.blue,
+                  size: 26.0,
+                ),
+                tooltip: 'Save for later',
+              ),
       ],
     );
   }
